@@ -80,7 +80,9 @@ class Boid:
             com += boid.pos/neigborcount
         
         # difference vector between boid position and center of mass
-        diff = (com - self.pos)/1000
+        diff = (com - self.pos)/6000
+
+        # return Vector2(0,0)
         return diff
 
 
@@ -94,9 +96,10 @@ class Boid:
             if diverging_vector.length() < (self.size * 3):
                 cumulative_diverging_vector += diverging_vector
             
-        cumulative_diverging_vector /= 100
+        cumulative_diverging_vector += self.velocity
+        cumulative_diverging_vector /= 600
 
-        return Vector2(0,0)
+        # return Vector2(0,0)
         return cumulative_diverging_vector
 
 
@@ -108,7 +111,7 @@ class Boid:
             total_vector += boid.velocity
 
         average_neighbor_velocity = total_vector / len(self.neighbors)
-        velocity_correction = (average_neighbor_velocity - self.velocity) 
+        velocity_correction = (average_neighbor_velocity - self.velocity) / 60
 
         return velocity_correction
 
