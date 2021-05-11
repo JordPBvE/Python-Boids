@@ -39,8 +39,8 @@ class Boid:
 
   def do_step(self, dt):
     self.pos = self.pos + dt * self.velocity
-    self.pos.x = self.pos.x % 512
-    self.pos.y = self.pos.y % 512
+    self.pos.x = self.pos.x % self.frame.width
+    self.pos.y = self.pos.y % self.frame.height
 
 
   def changeVelocity(self, boidArray):
