@@ -64,7 +64,7 @@ class Boid:
     def rule2(self):
         cumulative_diverging_vector = Vector2(0,0)
         for boid in self.frame.boid_list:
-        diverging_vector = self.pos - boid.pos
+            diverging_vector = self.pos - boid.pos
         if diverging_vector.length() < 10:
             cumulative_diverging_vector += diverging_vector
 
