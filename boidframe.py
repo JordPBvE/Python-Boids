@@ -31,7 +31,7 @@ class BoidFrame:
         self.boid_list.append(boid)
         boid.frame = self
 
-    def do_step(self, screen, dt):
+    def do_step(self, dt, screen):
         self.update_average_boid_pos()
         self.update_average_boid_velocity()
         for b in self.boid_list:

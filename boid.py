@@ -38,12 +38,13 @@ class Boid:
 
 
   def do_step(self, dt):
+    self.change_velocity()
     self.pos = self.pos + dt * self.velocity
     self.pos.x = self.pos.x % self.frame.width
     self.pos.y = self.pos.y % self.frame.height
 
 
-  def changeVelocity(self, boidArray):
+  def change_velocity(self):
     # self.angle += perlin(self.time)
     v1 = self.rule1()
     v2 = self.rule2()
@@ -56,7 +57,7 @@ class Boid:
   def rule1(self): 
     com = self.frame.average_boid_pos
     # difference vector between boid position and center of mass
-    diff = (self.position - com)/100
+    diff = (com - self.pos)/10000
 
     return diff
 
@@ -72,13 +73,12 @@ class Boid:
 
 
   def rule3(self):
-    velocity_correction = (self.frame.average_boids_velocity - self.velocity)/8
+    velocity_correction = (self.frame.average_boid_velocity - self.velocity)/8
     return velocity_correction
 
 
-  def perlin_noise():
-
-    return 0
+  def perlin_noise(self):
+    return Vector2(0, 0)
 
 
 
