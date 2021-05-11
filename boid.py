@@ -1,5 +1,5 @@
 import copy
-import random
+from random import randint
 import pygame
 from pygame import Color
 from pygame.math import Vector2
@@ -10,7 +10,7 @@ class Boid:
                 pos=Vector2(0, 0),
                 size=16,
                 velocity=Vector2(1,1),
-                max_speed = 1,
+                max_speed = 0.30,
                 color=Color(255,255,255),): # window as input aswell??
         self.frame = frame
         self.pos = pos
@@ -64,7 +64,7 @@ class Boid:
     def rule1(self): 
         com = self.frame.average_boid_pos
         # difference vector between boid position and center of mass
-        diff = (com - self.pos)/1000
+        diff = (com - self.pos)/4000
         return diff
 
 
@@ -72,13 +72,14 @@ class Boid:
         cumulative_diverging_vector = Vector2(0,0)
         for boid in self.frame.boid_list:
             diverging_vector = self.pos - boid.pos
-        if diverging_vector.length() < 10:
-            cumulative_diverging_vector += diverging_vector
+            if diverging_vector.length() < 10:
+                cumulative_diverging_vector += diverging_vector
+                cumulative_diverging_vector /= 100
         return cumulative_diverging_vector
 
 
     def rule3(self):
-        velocity_correction = (self.frame.average_boid_velocity - self.velocity)/8
+        velocity_correction = (self.frame.average_boid_velocity - self.velocity)/2
         return velocity_correction
 
 

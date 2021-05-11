@@ -18,7 +18,9 @@ screen = pygame.display.set_mode((width, height))
 
 frame = BoidFrame(width=width, height=height)
 
-for i in range(32):
+boid_count = 100
+
+for i in range(boid_count):
     frame.add_boid(Boid((500,500), color=Color(random.randint(0, 255), random.randint(0,255), 28), size=8, velocity=(Vector2(random.uniform(0.5, 0.8), random.uniform(0.5, 0.7)))))
 
 pygame.init()
