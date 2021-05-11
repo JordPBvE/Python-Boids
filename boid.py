@@ -10,11 +10,13 @@ class Boid:
                 pos=Vector2(0, 0),
                 size=16,
                 velocity=Vector2(1,1),
+                max_speed = 1,
                 color=Color(255,255,255),): # window as input aswell??
         self.frame = frame
         self.pos = pos
         self.size = size
         self.velocity = velocity
+        self.max_speed = max_speed
         self.color = color
       # self.time = random.random(0.0, 10000) # perlin noise for angle noise?
 
@@ -53,11 +55,16 @@ class Boid:
 
         self.velocity = self.velocity + v1 + v2 + v3 + noise
 
+        magnitude = self.velocity.length()
+
+        if magnitude > self.max_speed:
+            self.velocity = self.velocity / (magnitude/self.max_speed)
+
 
     def rule1(self): 
         com = self.frame.average_boid_pos
         # difference vector between boid position and center of mass
-        diff = (com - self.pos)/100
+        diff = (com - self.pos)/1000
         return diff
 
 
