@@ -7,18 +7,20 @@ from pygame.math import Vector2
 class Boid:
     def __init__(self,
                 frame = None,
-                pos=Vector2(0, 0),
-                size=8,
-                velocity=Vector2(1,1),
+                pos = Vector2(0, 0),
+                size = 8,
+                velocity = Vector2(1,1),
                 max_speed = 0.30,
-                color=Color(255,255,255),): # window as input aswell??
+                color = Color(255,255,255),): 
+
         self.frame = frame
+        self.neighbors = []
+        self.checkradius = 150
         self.pos = pos
         self.size = size
         self.velocity = velocity
         self.max_speed = max_speed
         self.color = color
-      # self.time = random.random(0.0, 10000) # perlin noise for angle noise?
 
 
     def draw(self, surface):
@@ -47,55 +49,67 @@ class Boid:
 
 
     def change_velocity(self):
-        # self.angle += perlin(self.time)
+        self.identify_neighbors()
+
         v1 = self.rule1()
         v2 = self.rule2()
         v3 = self.rule3()
-        noise = self.perlin_noise()
 
-        self.velocity = self.velocity + v1 + v2 + v3 + noise
+        self.velocity = self.velocity + v1 + v2 + v3
 
         magnitude = self.velocity.length()
 
         if magnitude > self.max_speed:
             self.velocity = self.velocity / (magnitude/self.max_speed)
 
+    def identify_neighbors(self):
+        self.neighbors = []
+        for boid in self.frame.boid_list:
+            diff = self.pos - boid.pos
+
+            if diff.length() < self.checkradius:
+                self.neighbors.append(boid)
+
 
     def rule1(self): 
         # Move towards the center of all boids
-        com = self.frame.average_boid_pos
+        com = Vector2(0,0)
+        neigborcount = len(self.neighbors)
+
+        for boid in self.neighbors:
+            com += boid.pos/neigborcount
+        
         # difference vector between boid position and center of mass
-        diff = (com - self.pos)/16000
+        diff = (com - self.pos)/1000
         return diff
 
 
     def rule2(self):
         # Move away from neighbouring boids that are just a bit too close
         cumulative_diverging_vector = Vector2(0,0)
-        for boid in self.frame.boid_list:
+
+        for boid in self.neighbors:
             diverging_vector = self.pos - boid.pos
+
             if diverging_vector.length() < (self.size * 3):
                 cumulative_diverging_vector += diverging_vector
-                cumulative_diverging_vector /= 1280
+            
+        cumulative_diverging_vector /= 100
+
+        return Vector2(0,0)
         return cumulative_diverging_vector
 
 
     def rule3(self):
-        # Move together with other boids
-        velocity_correction = (self.frame.average_boid_velocity - self.velocity) / 4
+        # Allign with neighboring boids
+        total_vector = Vector2(0, 0)
+
+        for boid in self.neighbors:
+            total_vector += boid.velocity
+
+        average_neighbor_velocity = total_vector / len(self.neighbors)
+        velocity_correction = (average_neighbor_velocity - self.velocity) 
+
         return velocity_correction
-
-
-    def perlin_noise(self):
-        return Vector2(0, 0)
-
-
-
-    ### time input for noise function
-    # def timeChange(self):
-    #   self.time += 1
-
-    # def move(self):
-
 
 

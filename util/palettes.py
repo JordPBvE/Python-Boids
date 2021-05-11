@@ -20,6 +20,12 @@ color_palette_neon = [ Color(0,0,0),
                        Color(105, 5, 237),
                        Color(17, 6, 214) ]
 
+color_palette_mkbhd = [Color(186, 195, 202),
+                       Color(244, 68, 72),
+                       Color(254, 34, 48),
+                       Color(154, 41, 48),
+                       Color(135, 5, 70)]
+
 color_palette_hackergreen = [ Color(0, 3, 0),
                               Color(6, 47, 64),
                               Color(2, 89, 81),
@@ -27,6 +33,27 @@ color_palette_hackergreen = [ Color(0, 3, 0),
                               Color(22, 140, 64),
                               Color(130, 217, 43) ]
 
+color_palette_sand = [Color(20, 12, 4),
+                       Color(160, 112, 72),
+                       Color(228, 208, 179),
+                       Color(162, 138, 109),
+                       Color(211, 203, 172)]
+
+color_palette_holland = [Color(5, 5, 5),
+                       Color(174, 28, 40),
+                       Color(230, 230, 230),
+                       Color(33, 70, 139),
+                       Color(255, 140, 0)]
+
+
+
 # Get one of the above palettes randomly:
 def get_random_color_palette():
-    return random.choice((color_palette_clown, color_palette_sunny, color_palette_neon, color_palette_hackergreen))
+    return random.choice((color_palette_clown,
+                             color_palette_sunny, 
+                            color_palette_neon, 
+                            color_palette_hackergreen,
+                            color_palette_sand,
+                            color_palette_mkbhd,
+                            color_palette_holland,
+                            ))
