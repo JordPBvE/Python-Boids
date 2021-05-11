@@ -45,9 +45,9 @@ class Boid:
 
   def changeVelocity(self, boidArray):
     # self.angle += perlin(self.time)
-    v1 = self.rule1(boidArray)
-    v2 = self.rule2()
-    v3 = self.rule3()
+    v1 = self.rule1(self.frame.center_of_mass)
+    v2 = self.rule2(self.frame.boid_list)
+    v3 = self.rule3(self.frame.boid_list)
 
     self.velocity = self.velocity + v1 + v2 + v3
 
@@ -62,8 +62,18 @@ class Boid:
     diff.y = (self.position.x - com.x)/100
 
     return diff
-  def rule2(self):
-    return 0
+
+
+  def rule2(self, Boids):
+    cumulative_diverging_vector = Vector2(0,0)
+    for boid in Boids:
+      diverging_vector = self.pos - boid.pos
+      if diverging_vector.length() < 10:
+        cumulative_diverging_vector += diverging_vector
+
+    return cumulative_diverging_vector
+
+
   def rule3(self):
     return 0
 
