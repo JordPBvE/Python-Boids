@@ -62,24 +62,27 @@ class Boid:
 
 
     def rule1(self): 
+        # Move towards the center of all boids
         com = self.frame.average_boid_pos
         # difference vector between boid position and center of mass
-        diff = (com - self.pos)/4000
+        diff = (com - self.pos)/16000
         return diff
 
 
     def rule2(self):
+        # Move away from neighbouring boids that are just a bit too close
         cumulative_diverging_vector = Vector2(0,0)
         for boid in self.frame.boid_list:
             diverging_vector = self.pos - boid.pos
-            if diverging_vector.length() < 10:
+            if diverging_vector.length() < (self.size * 3):
                 cumulative_diverging_vector += diverging_vector
-                cumulative_diverging_vector /= 100
+                cumulative_diverging_vector /= 1280
         return cumulative_diverging_vector
 
 
     def rule3(self):
-        velocity_correction = (self.frame.average_boid_velocity - self.velocity) / 2
+        # Move together with other boids
+        velocity_correction = (self.frame.average_boid_velocity - self.velocity) / 4
         return velocity_correction
 
 

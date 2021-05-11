@@ -1,6 +1,5 @@
 from boid import Boid
 import pygame
-from random import randint
 from pygame import Color
 from pygame.math import Vector2
 
