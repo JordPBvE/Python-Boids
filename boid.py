@@ -55,12 +55,8 @@ class Boid:
 
   def rule1(self): 
     com = self.frame.average_boid_pos
-
     # difference vector between boid position and center of mass
-    diff = Vector2(0,0) 
-
-    diff.x = (self.position.x - com.x)/100
-    diff.y = (self.position.x - com.x)/100
+    diff = (self.position - com)/100
 
     return diff
 
