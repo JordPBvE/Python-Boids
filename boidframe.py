@@ -31,7 +31,6 @@ class BoidFrame:
         self.boid_count += 1
         self.boid_list.append(boid)
         boid.frame = self
-        boid.pos = Vector2(randint(0, self.width), randint(0, self.height))
 
     def do_step(self, dt, screen):
         self.update_average_boid_pos()

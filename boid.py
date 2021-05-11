@@ -8,7 +8,7 @@ class Boid:
     def __init__(self,
                 frame = None,
                 pos=Vector2(0, 0),
-                size=16,
+                size=8,
                 velocity=Vector2(1,1),
                 max_speed = 0.30,
                 color=Color(255,255,255),): # window as input aswell??
@@ -79,7 +79,7 @@ class Boid:
 
 
     def rule3(self):
-        velocity_correction = (self.frame.average_boid_velocity - self.velocity)/2
+        velocity_correction = (self.frame.average_boid_velocity - self.velocity) / 2
         return velocity_correction
 
 
