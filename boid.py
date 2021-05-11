@@ -16,6 +16,7 @@ class Boid:
     self.color = color
     # self.time = random.random(0.0, 10000) # perlin noise for angle noise?
 
+
   def draw(self, surface):
     # draw boid with pygame
     s = self.size * self.velocity.normalize() # use the normalized velocity vector to draw the head
@@ -36,10 +37,22 @@ class Boid:
     self.pos.x = self.pos.x % 512
     self.pos.y = self.pos.y % 512
 
-  def changeAngle(self):
-    # self.angle += perlin(self.time)
-    print("") # error otherwise, can be deleted when other code is written
- 
+  def changeVelocity(self, boidArray):
+      # self.angle += perlin(self.time)
+      v1 = rule1(self, boidArray)
+      v2 = rule2(self, boidArray)
+      v3 = rule3(self, boidArray)
+
+      self.velocity = self.velocity + v1 + v2 + v3
+
+  def rule1():
+      print("") 
+  def rule2():
+      print("")
+  def rule3():
+      print("")
+
+
 ### time input for noise function
   # def timeChange(self):
   #   self.time += 1
