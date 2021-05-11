@@ -28,9 +28,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-    frame.do_step(dt)
+    frame.do_step(screen, dt)
     for boid in frame.boid_list:
         boid.draw(screen)
-    frame.update_average_boid_pos()
-    print(frame.average_boid_pos)
     pygame.display.update()
