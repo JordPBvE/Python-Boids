@@ -15,6 +15,7 @@ class Boid:
 
         self.frame = frame
         self.neighbors = []
+        self.near_obstacles = []
         self.checkradius = 150
         self.pos = pos
         self.size = size
@@ -62,7 +63,7 @@ class Boid:
         v1 = self.rule1()
         v2 = self.rule2()
         v3 = self.rule3()
-        v4 = self.avoid_walls()
+        v4 = self.avoid_obstacles()
 
         self.velocity = self.velocity + v1 + v2 + v3 + v4
 
@@ -78,6 +79,13 @@ class Boid:
 
             if diff.length() < self.checkradius:
                 self.neighbors.append(boid)
+
+        self.near_obstacles = []
+        for obstacle in self.frame.obstacle_list:
+            diff = self.pos - obstacle.pos
+
+            if diff.length() - obstacle.radius < self.checkradius:
+                self.near_obstacles.append(obstacle)
 
 
     def rule1(self): 
@@ -102,11 +110,15 @@ class Boid:
         for boid in self.neighbors:
             diverging_vector = self.pos - boid.pos
 
-            if diverging_vector.length() < (self.size * 3):
+            len = diverging_vector.length()
+
+            if  0 < len < (self.size * 8):
+                diverging_vector.x /= len
+                diverging_vector.y /= len
                 cumulative_diverging_vector += diverging_vector
             
-        cumulative_diverging_vector += self.velocity
-        cumulative_diverging_vector /= 600
+        cumulative_diverging_vector += self.velocity/2
+        cumulative_diverging_vector /= 80
 
         # return Vector2(0,0)
         return cumulative_diverging_vector
@@ -123,6 +135,28 @@ class Boid:
         velocity_correction = (average_neighbor_velocity - self.velocity) / 60
 
         return velocity_correction
+
+
+
+    def avoid_obstacles(self):
+        cumulative_diverging_vector = Vector2(0,0)
+
+        for obstacle in self.near_obstacles:
+            diverging_vector = self.pos - obstacle.pos
+            diverging_vector -= diverging_vector * (obstacle.radius/diverging_vector.length())
+
+            if diverging_vector.length() < (self.size * 20):
+                diverging_vector.x = 5/ diverging_vector.x
+                diverging_vector.y = 5/ diverging_vector.y
+                cumulative_diverging_vector += diverging_vector
+            
+        # cumulative_diverging_vector += self.velocity/10
+        cumulative_diverging_vector /= 10
+        # return Vector2(0,0)
+        return cumulative_diverging_vector
+
+
+
 
     def avoid_walls(self):
         

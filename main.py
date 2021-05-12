@@ -21,7 +21,7 @@ frame = BoidFrame(width=width, height=height)
 color_palette = get_random_color_palette()
 
 # Create boids:
-boid_count = 160
+boid_count = 50
 for i in range(boid_count):
     random_pos = Vector2(random.randint(0, width), random.randint(0, height))
     frame.add_boid(Boid(pos=random_pos, color=random.choice(color_palette[1:]), velocity=Vector2(-1, 0), max_speed=random.uniform(0.3, 0.45)))
@@ -29,14 +29,20 @@ for i in range(boid_count):
 should_run = True
 while should_run:
     dt = clock.tick(60)
+
     screen.fill(color_palette[0])
+    frame.do_step(dt, screen)
+
+    process_key_pressed(frame, screen)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             should_run = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            process_mouse_event(event, frame)
         elif event.type == pygame.KEYDOWN:
-            process_keydown_event(event, frame)
+            process_key_event(event, frame)
         elif event.type == pygame.VIDEORESIZE:
             process_resize_event(event, screen, frame)
-    frame.do_step(dt, screen)
     pygame.display.update()
 
