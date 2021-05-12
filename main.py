@@ -24,7 +24,8 @@ color_palette = get_random_color_palette()
 boid_count = 50
 for i in range(boid_count):
     random_pos = Vector2(random.randint(0, width), random.randint(0, height))
-    frame.add_boid(Boid(pos=random_pos, color=random.choice(color_palette[1:]), velocity=Vector2(-1, 0), max_speed=random.uniform(0.3, 0.45)))
+    random_velocity = Vector2(random.uniform(-.5, .5), random.uniform(-.5, .5))
+    frame.add_boid(Boid(pos=random_pos, color=random.choice(color_palette[1:]), velocity=random_velocity, max_speed=random.uniform(0.3, 0.45)))
 
 should_run = True
 while should_run:
