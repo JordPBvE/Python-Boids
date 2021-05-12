@@ -38,6 +38,14 @@ class Boid:
         s_left = copy.deepcopy(s)
         s_left.x , s_left.y = -s_left.y, s_left.x 
         foot_2 = self.pos - s + 0.5 * s_left
+        
+        # pygame.draw.circle(surface, self.color,self.pos, self.checkradius, width = 1)
+        
+        # for boid in self.neighbors:
+        #     diff = self.pos - boid.pos
+        #     if diff.length() < self.checkradius:
+        #         pygame.draw.line(surface, pygame.Color(100, 100, 100), self.pos, boid.pos, width = 1)
+
         pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
 
 
@@ -54,8 +62,9 @@ class Boid:
         v1 = self.rule1()
         v2 = self.rule2()
         v3 = self.rule3()
+        v4 = self.avoid_walls()
 
-        self.velocity = self.velocity + v1 + v2 + v3
+        self.velocity = self.velocity + v1 + v2 + v3 + v4
 
         magnitude = self.velocity.length()
 
@@ -114,5 +123,9 @@ class Boid:
         velocity_correction = (average_neighbor_velocity - self.velocity) / 60
 
         return velocity_correction
+
+    def avoid_walls(self):
+        
+        return Vector2(0,0)
 
 
