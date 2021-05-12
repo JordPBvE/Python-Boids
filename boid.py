@@ -144,15 +144,13 @@ class Boid:
         for obstacle in self.near_obstacles:
             diverging_vector = self.pos - obstacle.pos
             diverging_vector -= diverging_vector * (obstacle.radius/diverging_vector.length())
+            strength = 1 / (diverging_vector.length()**2)
 
             if diverging_vector.length() < (self.size * 20):
-                diverging_vector.x = 5/ diverging_vector.x
-                diverging_vector.y = 5/ diverging_vector.y
+                diverging_vector *= strength
                 cumulative_diverging_vector += diverging_vector
             
-        # cumulative_diverging_vector += self.velocity/10
-        cumulative_diverging_vector /= 10
-        # return Vector2(0,0)
+        cumulative_diverging_vector /= 2
         return cumulative_diverging_vector
 
 
