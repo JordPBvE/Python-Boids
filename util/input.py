@@ -28,3 +28,4 @@ def process_key_event(event, frame):
 def process_resize_event(event, screen, frame):
     frame.width = event.w
     frame.height = event.h
+    frame.create_walls()

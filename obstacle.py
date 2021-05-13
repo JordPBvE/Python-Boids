@@ -54,3 +54,4 @@ class Line():
         pygame.draw.line(surface, self.color, self.begin_pos, self.end_pos, width = 2)
 
 
+
