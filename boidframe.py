@@ -6,8 +6,8 @@ from pygame import Color
 from pygame.math import Vector2
 
 from boid import Boid
+from obstacle import Line
 from util.palettes import get_random_color_palette
-
 
 # This is a class that contains all Boid objects
 class BoidFrame:
@@ -16,6 +16,7 @@ class BoidFrame:
         self.height = height
         self.boid_list = []
         self.obstacle_list = []
+        self.line_list = []
         self.obstacle_size = 50
         self.debug_mode = False
         self.build_mode = False
@@ -37,9 +38,12 @@ class BoidFrame:
             b.draw(screen)
         for o in self.obstacle_list:
             o.draw(screen)
+        for l in self.line_list:
+            l.draw(screen)
 
         if self.build_mode:
             pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)
+
 
     def print_collisions(self):
         for obstacle in self.obstacle_list:
@@ -49,3 +53,12 @@ class BoidFrame:
                     collisions += 1
             if collisions > 0:
                 print(f"{datetime.now()} | obstacle at pos {(obstacle.pos.x, obstacle.pos.y)} has {collisions} collisions. )")
+
+    def create_walls(self):
+        self.obstacle_list = []
+        self.line_list = []
+        self.line_list.append(Line(Vector2(1,1), Vector2(1, self.height - 1), pygame.Color(255, 255, 255), self))
+        self.line_list.append(Line(Vector2(1,1), Vector2(self.width - 1, 1), pygame.Color(255, 255, 255), self))
+        self.line_list.append(Line(Vector2(1, self.height - 1), Vector2(self.width - 1, self.height - 1), pygame.Color(255, 255, 255), self))
+        self.line_list.append(Line(Vector2(self.width - 1,1), Vector2(self.width - 1, self.height - 1), pygame.Color(255, 255, 255), self))
+
