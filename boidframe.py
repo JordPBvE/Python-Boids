@@ -12,6 +12,8 @@ class BoidFrame:
         self.boid_list = []
         self.obstacle_list = []
         self.obstacle_size = 50
+        self.debug_mode = False
+        self.build_mode = False
 
     def add_boid(self, boid):
         self.boid_list.append(boid)
@@ -27,3 +29,6 @@ class BoidFrame:
             b.draw(screen)
         for o in self.obstacle_list:
             o.draw(screen)
+
+        if self.build_mode:
+            pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)

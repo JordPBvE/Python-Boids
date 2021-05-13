@@ -34,8 +34,6 @@ while should_run:
     screen.fill(color_palette[0])
     frame.do_step(dt, screen)
 
-    process_key_pressed(frame, screen)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             should_run = False
