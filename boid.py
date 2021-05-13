@@ -156,9 +156,9 @@ class Boid:
             rad = obstacle.radius + 5
 
             vect_self_to_obstacle = (self.pos - obstacle.pos)
-            is_obstacle_detectable = vect_self_to_obstacle.length() < (4 * rad)
             vect_self_to_obstacle -= vect_self_to_obstacle * (rad/vect_self_to_obstacle.length())
 
+            is_obstacle_detectable = vect_self_to_obstacle.length() < (4 * rad)
             is_obstacle_in_front = dist_vector_line_to_obstacle < rad
 
             if is_obstacle_detectable and is_obstacle_in_front:
