@@ -8,7 +8,7 @@ class Boid:
     def __init__(self,
                 frame = None,
                 pos = Vector2(0, 0),
-                size = 8,
+                size = 6,
                 velocity = Vector2(1,1),
                 max_speed = 0.30,
                 color = Color(255,255,255),): 
