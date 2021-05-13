@@ -21,7 +21,7 @@ frame = BoidFrame(width=width, height=height)
 color_palette = get_random_color_palette()
 
 # Create boids:
-boid_count = 50
+boid_count = 80
 for i in range(boid_count):
     random_pos = Vector2(random.randint(0, width), random.randint(0, height))
     random_velocity = Vector2(random.uniform(-.5, .5), random.uniform(-.5, .5))

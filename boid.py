@@ -153,13 +153,13 @@ class Boid:
             dist_vector_line_to_obstacle = d(vx, vy)
 
             # Use radius slightly bigger than that of the obstacle, makes it look more natural
-            rad = obstacle.radius + 5
+            rad = obstacle.radius
 
             vect_self_to_obstacle = (self.pos - obstacle.pos)
             vect_self_to_obstacle -= vect_self_to_obstacle * (rad/vect_self_to_obstacle.length())
 
             is_obstacle_detectable = vect_self_to_obstacle.length() < (4 * rad)
-            is_obstacle_in_front = dist_vector_line_to_obstacle < rad
+            is_obstacle_in_front = dist_vector_line_to_obstacle < rad + 10
 
             if is_obstacle_detectable and is_obstacle_in_front:
                 strength = math.sqrt(rad) / (vect_self_to_obstacle.length())
