@@ -11,14 +11,6 @@ from util.palettes import get_random_color_palette
 
 # This is a class that contains all Boid objects
 class BoidFrame:
-    width: int
-    height: int
-    boid_list: list
-    obstacle_list: list
-    obstacle_size: int
-    debug_mode: bool
-    build_mode: bool
-    color_palette: list
     def __init__(self, width=256, height=256):
         self.width = width
         self.height = height
