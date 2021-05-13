@@ -1,3 +1,4 @@
+import math
 import copy
 from random import randint
 import pygame
@@ -11,12 +12,13 @@ class Boid:
                 size = 6,
                 velocity = Vector2(1,1),
                 max_speed = 0.30,
-                color = Color(255,255,255),): 
+                color = Color(255,255,255)): 
 
         self.frame = frame
         self.neighbors = []
         self.near_obstacles = []
         self.checkradius = 150
+        self.obstacle_radius = 2 * self.checkradius
         self.pos = pos
         self.size = size
         self.velocity = velocity
@@ -89,7 +91,7 @@ class Boid:
         for obstacle in self.frame.obstacle_list:
             diff = self.pos - obstacle.pos
 
-            if diff.length() - obstacle.radius < self.checkradius:
+            if diff.length() - obstacle.radius < self.obstacle_radius:
                 self.near_obstacles.append(obstacle)
 
 
@@ -144,25 +146,60 @@ class Boid:
 
 
     def avoid_obstacles(self):
-        cumulative_diverging_vector = Vector2(0,0)
+        # this factor (should be 0 <= factor <= 1) determines the distribution
+        # between direct avoidance (moving directly away), and steering avoidance
+        # (steering around obstacles)
+        factor_direct = 0.4
 
-        for obstacle in self.near_obstacles:
-            diverging_vector = self.pos - obstacle.pos
-            diverging_vector -= diverging_vector * (obstacle.radius/diverging_vector.length())
-            strength = 1 / (diverging_vector.length()**2)
+        # calculate direct avoidance vector (moving directly away from obstacles)
+        cumulative_diverging_direct = Vector2(0,0)
+        if factor_direct > 0:
+            for obstacle in self.near_obstacles:
+                diverging_vector = self.pos - obstacle.pos
+                diverging_vector -= diverging_vector * (obstacle.radius/diverging_vector.length())
+                if diverging_vector.length() < (self.size * 20):
+                    strength = 1 / (diverging_vector.length()**2)
+                    diverging_vector *= strength
+                    cumulative_diverging_direct += diverging_vector
+            cumulative_diverging_direct /= 2
+        
+        # calculate steering avoidance vector (steering around obstacles)
+        cumulative_diverging_steering = Vector2(0,0)
+        if factor_direct < 1:
+            for obstacle in self.near_obstacles:
+                # "rename" variables to shorten the equation for d below
+                px = self.pos.x
+                py = self.pos.y
+                mx = obstacle.pos.x
+                my = obstacle.pos.y
+                vx = self.velocity.x
+                vy = self.velocity.y
+                # d here is the distance from the midpoint of the obstacle to the
+                # line through the midpoint of the boid with the direction of its
+                # velocity vector
+                d = lambda vvx, vvy: abs((vvy/vvx) * mx - my + (py - (vvy/vvx) * px)) / (math.sqrt(1 + (vvy/vvx)**2))
+                dist_vector_line_to_obstacle = d(vx, vy)
 
-            if diverging_vector.length() < (self.size * 20):
-                diverging_vector *= strength * obstacle.strength
-                cumulative_diverging_vector += diverging_vector
-            
-        cumulative_diverging_vector /= 2
-        return cumulative_diverging_vector
 
+                to_obstacle = obstacle.pos - self.pos
+                angle_with_obstacle = self.velocity.angle_to(to_obstacle)
+                # the "+ 10" is there to make boids that would scratch the edge
+                # of the obstacle also steer away
+                is_obstacle_in_front = dist_vector_line_to_obstacle < obstacle.radius + 10 and abs(angle_with_obstacle) < 90
 
+                if is_obstacle_in_front:
+                    dist_to_obstacle = (to_obstacle).length() - obstacle.radius
+                    strength = math.sqrt(obstacle.radius) / dist_to_obstacle
+                    # If the distance after turing left is smaller, turn right (since we're trying to increase the distance) - and vice versa
+                    if angle_with_obstacle >= 0:
+                        cumulative_diverging_steering += strength * self.velocity.rotate(-90)
+                    else:
+                        cumulative_diverging_steering += strength * self.velocity.rotate(90)
+            # cumulative_diverging_steering *= 2
 
+        return factor_direct * cumulative_diverging_direct + (1 - factor_direct) * cumulative_diverging_steering
 
     def avoid_walls(self):
-        
         return Vector2(0,0)
 
 
