@@ -152,7 +152,7 @@ class Boid:
             strength = 1 / (diverging_vector.length()**2)
 
             if diverging_vector.length() < (self.size * 20):
-                diverging_vector *= strength
+                diverging_vector *= strength * obstacle.strength
                 cumulative_diverging_vector += diverging_vector
             
         cumulative_diverging_vector /= 2

@@ -7,6 +7,7 @@ from pygame.math import Vector2
 
 from boid import Boid
 from boidframe import BoidFrame
+from obstacle import Line
 from util.palettes import get_random_color_palette
 from util.input import *
 
@@ -26,6 +27,11 @@ for i in range(boid_count):
     random_pos = Vector2(random.randint(0, width), random.randint(0, height))
     random_velocity = Vector2(random.uniform(-.5, .5), random.uniform(-.5, .5))
     frame.add_boid(Boid(pos=random_pos, color=random.choice(color_palette[1:]), velocity=random_velocity, max_speed=random.uniform(0.3, 0.45)))
+
+# Create Line
+frame.line_list.append(Line(Vector2(0,0), Vector2(width, height), pygame.Color(255, 255, 255), frame))
+frame.line_list.append(Line(Vector2(width,0), Vector2(0, height), pygame.Color(255, 255, 255), frame))
+
 
 should_run = True
 while should_run:
