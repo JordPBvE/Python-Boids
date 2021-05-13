@@ -22,11 +22,11 @@ frame = BoidFrame(width=width, height=height)
 color_palette = get_random_color_palette()
 
 # Create boids:
-boid_count = 150
+boid_count = 50
 for i in range(boid_count):
-    random_pos = Vector2(random.randint(0, width), random.randint(0, height))
+    random_pos = Vector2(random.randint(10, width - 10), random.randint(10, height -10))
     random_velocity = Vector2(random.uniform(-.5, .5), random.uniform(-.5, .5))
-    frame.add_boid(Boid(pos=random_pos, velocity=random_velocity, max_speed=random.uniform(0.3, 0.45)))
+    frame.add_boid(Boid(pos=random_pos, velocity=random_velocity, max_speed=random.uniform(0.2, 0.3)))
 
 # Create Walls
 frame.create_walls()
