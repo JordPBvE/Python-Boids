@@ -45,15 +45,16 @@ color_palette_holland = [Color(5, 5, 5),
                        Color(33, 70, 139),
                        Color(255, 140, 0)]
 
-
+all_palettes = [
+    color_palette_clown,
+    color_palette_sunny, 
+    color_palette_neon, 
+    color_palette_hackergreen,
+    color_palette_sand,
+    color_palette_mkbhd,
+    color_palette_holland,
+]
 
 # Get one of the above palettes randomly:
 def get_random_color_palette():
-    return random.choice((color_palette_clown,
-                             color_palette_sunny, 
-                            color_palette_neon, 
-                            color_palette_hackergreen,
-                            color_palette_sand,
-                            color_palette_mkbhd,
-                            color_palette_holland,
-                            ))
+    return random.choice(all_palettes)

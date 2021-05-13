@@ -25,13 +25,12 @@ boid_count = 50
 for i in range(boid_count):
     random_pos = Vector2(random.randint(0, width), random.randint(0, height))
     random_velocity = Vector2(random.uniform(-.5, .5), random.uniform(-.5, .5))
-    frame.add_boid(Boid(pos=random_pos, color=random.choice(color_palette[1:]), velocity=random_velocity, max_speed=random.uniform(0.3, 0.45)))
+    frame.add_boid(Boid(pos=random_pos, velocity=random_velocity, max_speed=random.uniform(0.3, 0.45)))
 
 should_run = True
 while should_run:
     dt = clock.tick(60)
 
-    screen.fill(color_palette[0])
     frame.do_step(dt, screen)
 
     for event in pygame.event.get():
@@ -44,4 +43,7 @@ while should_run:
         elif event.type == pygame.VIDEORESIZE:
             process_resize_event(event, screen, frame)
     pygame.display.update()
+
+    if frame.debug_mode:
+        frame.print_collisions()
 
