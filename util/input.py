@@ -1,6 +1,8 @@
 import pygame
 from pygame.math import Vector2
+
 from obstacle import Circle
+from util.palettes import get_random_color_palette
 
 def process_mouse_event(event, boidFrame):
     pressed = pygame.mouse.get_pressed()[ 0 ]
@@ -27,6 +29,8 @@ def process_key_event(event, frame):
         frame.debug_mode = not frame.debug_mode
     if event.key == pygame.K_b:
         frame.build_mode = not frame.build_mode
+    if event.key == pygame.K_p:
+        frame.change_color_palette(get_random_color_palette())
 
 def process_resize_event(event, screen, frame):
     frame.width = event.w

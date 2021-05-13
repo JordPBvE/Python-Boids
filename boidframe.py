@@ -44,6 +44,10 @@ class BoidFrame:
         if self.build_mode:
             pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)
 
+    def change_color_palette(self, palette):
+        self.color_palette = palette
+        for boid in self.boid_list:
+            boid.color = random.choice(self.color_palette[1:])
 
     def print_collisions(self):
         for obstacle in self.obstacle_list:
