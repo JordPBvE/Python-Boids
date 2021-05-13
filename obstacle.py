@@ -5,10 +5,10 @@ from pygame.math import Vector2
 
 class Circle():
     def __init__(self,
-                pos,
                 radius,
                 color,
                 visible,
+                pos = Vector2(0,0),
                 frame = None):
         self.frame = frame
         self.pos = pos

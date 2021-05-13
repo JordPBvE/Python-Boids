@@ -1,12 +1,14 @@
 import pygame
+from pygame.math import Vector2
 from obstacle import Circle
 
 def process_mouse_event(event, boidFrame):
     pressed = pygame.mouse.get_pressed()[ 0 ]
-    position = pygame.mouse.get_pos()
+    position = Vector2()
+    position.x, position.y = pygame.mouse.get_pos()
 
     if pressed:
-        new_circle = Circle(position, boidFrame.obstacle_size, pygame.Color(230, 20, 0), True)
+        new_circle = Circle(boidFrame.obstacle_size, pygame.Color(230, 20, 0), True, pos=position)
         new_circle.frame = boidFrame
         boidFrame.obstacle_list.append(new_circle)
 

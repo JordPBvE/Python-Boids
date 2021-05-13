@@ -1,3 +1,4 @@
+import math
 import copy
 from random import randint
 import pygame
@@ -142,15 +143,37 @@ class Boid:
         cumulative_diverging_vector = Vector2(0,0)
 
         for obstacle in self.near_obstacles:
-            diverging_vector = self.pos - obstacle.pos
-            diverging_vector -= diverging_vector * (obstacle.radius/diverging_vector.length())
-            strength = 1 / (diverging_vector.length()**2)
+            px = self.pos.x
+            py = self.pos.y
+            mx = obstacle.pos.x
+            my = obstacle.pos.y
+            vx = self.velocity.x
+            vy = self.velocity.y
+            d = lambda vvx, vvy: abs((vvy/vvx) * mx - my + (py - (vvy/vvx) * px)) / (math.sqrt(1 + (vvy/vvx)**2))
+            dist_vector_line_to_obstacle = d(vx, vy)
 
-            if diverging_vector.length() < (self.size * 20):
-                diverging_vector *= strength
-                cumulative_diverging_vector += diverging_vector
+            # Use radius slightly bigger than that of the obstacle, makes it look more natural
+            rad = obstacle.radius + 5
+
+            vect_self_to_obstacle = (self.pos - obstacle.pos)
+            is_obstacle_detectable = vect_self_to_obstacle.length() < (4 * rad)
+            vect_self_to_obstacle -= vect_self_to_obstacle * (rad/vect_self_to_obstacle.length())
+
+            is_obstacle_in_front = dist_vector_line_to_obstacle < rad
+
+            if is_obstacle_detectable and is_obstacle_in_front:
+                strength = math.sqrt(rad) / (vect_self_to_obstacle.length())
+                right_component =  strength * self.velocity.rotate(-90)
+                left_component = strength * self.velocity.rotate(90)
+                right_rotated_vector = self.velocity + right_component
+                left_rotated_vector = self.velocity + left_component
+                # If the distance after turing left is smaller, turn right (since we're trying to increase the distance) - and vice versa
+                if d(left_rotated_vector.x, left_rotated_vector.y) <= d(right_rotated_vector.x, right_rotated_vector.y):
+                    cumulative_diverging_vector += right_component
+                else:
+                    cumulative_diverging_vector += left_component
             
-        cumulative_diverging_vector /= 2
+        cumulative_diverging_vector *= 2
         return cumulative_diverging_vector
 
 
