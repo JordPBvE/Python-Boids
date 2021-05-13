@@ -22,6 +22,7 @@ def process_mouse_event(event, boidFrame):
 def process_key_event(event, frame):
     if event.key == pygame.K_r:
         frame.obstacle_list = []
+        frame.create_walls()
     if event.key == pygame.K_d:
         frame.debug_mode = not frame.debug_mode
     if event.key == pygame.K_b:
