@@ -9,10 +9,18 @@ def process_mouse_event(event, boidFrame):
     position = Vector2()
     position.x, position.y = pygame.mouse.get_pos()
 
-    if pressed and boidFrame.build_mode:
+    if pygame.mouse.get_pressed()[ 1 ]:
+        boidFrame.polygon_drawing_mode = not boidFrame.polygon_drawing_mode
+
+    if pressed and boidFrame.build_mode and not boidFrame.polygon_drawing_mode:
         new_circle = Circle(position, boidFrame.obstacle_size, boidFrame.color_palette[-1], True)
         new_circle.frame = boidFrame
         boidFrame.obstacle_list.append(new_circle)
+    elif pressed and boidFrame.build_mode:
+        ###############################################
+        ## Add vertex to polygon that is being drawn ##
+        ###############################################
+        print()
     if event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 4:
             if boidFrame.obstacle_size < 300:

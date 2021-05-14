@@ -20,6 +20,8 @@ class BoidFrame:
         self.obstacle_size = 50
         self.debug_mode = False
         self.build_mode = False
+        self.polygon_drawing_mode = False
+        self.drawing = False
         self.color_palette = get_random_color_palette()
 
     def add_boid(self, boid):

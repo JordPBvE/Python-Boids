@@ -54,5 +54,23 @@ class Line():
     def draw(self, surface):
         pygame.draw.line(surface, self.color, self.begin_pos, self.end_pos, width = 2)
 
+    class Polygon():
+        def __init__(self,
+                    color,
+                    frame,
+                    verteces = [],
+                    lines = []):
+            self.color = color
+            self.verteces = verteces
+            self.lines = lines
+
+        def add_vertex(self, position):
+            self.verteces.append(position)
+            if len(self.vertces) >= 2:
+                self.lines.append(Line(self.verteces[-2], self.verteces[-1], self.frame.color_palette[-1], self.frame))
+        
+        def end_polygon(self):
+            self.lines.append(Line(self.verteces[-1], self.verteces[0], self.frame.color_palette[-1], self.frame))
+
 
 
