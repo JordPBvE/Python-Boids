@@ -23,7 +23,7 @@ class BoidFrame:
         self.color_palette = get_random_color_palette()
 
     def add_boid(self, boid):
-        boid.color = random.choice(self.color_palette[1:])
+        boid.color = random.choice(self.color_palette[1:-1])
         self.boid_list.append(boid)
         boid.frame = self
 
@@ -47,7 +47,7 @@ class BoidFrame:
     def change_color_palette(self, palette):
         self.color_palette = palette
         for boid in self.boid_list:
-            boid.color = random.choice(self.color_palette[1:])
+            boid.color = random.choice(self.color_palette[1:-1])
 
     def print_collisions(self):
         for obstacle in self.obstacle_list:

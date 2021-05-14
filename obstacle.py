@@ -20,6 +20,7 @@ class Circle():
         self.strength = strength
 
     def draw(self, surface):
+        self.color = self.frame.color_palette[-1]
         if (self.visible):
             pygame.draw.circle(surface, self.color, self.pos, self.radius)
 
