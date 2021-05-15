@@ -1,4 +1,4 @@
-from boid import Boid
+
 import pygame
 from pygame import Color
 import math
@@ -35,42 +35,46 @@ class Line():
         self.begin_pos = begin_pos
         self.end_pos = end_pos
         self.color = color
+        self.circles = []
         self.length = (begin_pos - end_pos).length()
         self.circle_radius = 10
 
         self.populate()
 
     def populate(self):
-        self.frame.line_list.append(self)
         circle_count = math.floor(self.length / (2*self.circle_radius))
         step = (self.end_pos - self.begin_pos) / circle_count
         circle_pos = self.begin_pos
-        print(circle_count)
+
         for i in range(circle_count):
             circle = Circle(circle_pos, self.circle_radius, pygame.Color(255, 255, 255), False, self.frame, strength = 0.4)
-            self.frame.obstacle_list.append(circle)
+            self.circles.append(circle)
             circle_pos = self.begin_pos + i*step
     
     def draw(self, surface):
         pygame.draw.line(surface, self.color, self.begin_pos, self.end_pos, width = 2)
 
-    class Polygon():
-        def __init__(self,
-                    color,
-                    frame,
-                    verteces = [],
-                    lines = []):
-            self.color = color
-            self.verteces = verteces
-            self.lines = lines
+class Polygon():
+    def __init__(self,
+                color,
+                frame,
+                verteces = [],
+                lines = []):
+        self.color = color
+        self.verteces = verteces
+        self.lines = lines
 
-        def add_vertex(self, position):
-            self.verteces.append(position)
-            if len(self.vertces) >= 2:
-                self.lines.append(Line(self.verteces[-2], self.verteces[-1], self.frame.color_palette[-1], self.frame))
-        
-        def end_polygon(self):
-            self.lines.append(Line(self.verteces[-1], self.verteces[0], self.frame.color_palette[-1], self.frame))
+    def add_vertex(self, position):
+        self.verteces.append(position)
+        if len(self.vertces) >= 2:
+            self.lines.append(Line(self.verteces[-2], self.verteces[-1], self.frame.color_palette[-1], self.frame))
+    
+    def end_polygon(self):
+        self.lines.append(Line(self.verteces[-1], self.verteces[0], self.frame.color_palette[-1], self.frame))
+
+    def draw(self):
+        for line in self.lines:
+            line.draw()
 
 
 

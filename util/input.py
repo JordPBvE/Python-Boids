@@ -11,6 +11,7 @@ def process_mouse_event(event, boidFrame):
 
     if pygame.mouse.get_pressed()[ 1 ]:
         boidFrame.polygon_drawing_mode = not boidFrame.polygon_drawing_mode
+        boidFrame.drawing = True
 
     if pressed and boidFrame.build_mode and not boidFrame.polygon_drawing_mode:
         new_circle = Circle(position, boidFrame.obstacle_size, boidFrame.color_palette[-1], True)
@@ -44,3 +45,4 @@ def process_resize_event(event, screen, frame):
     frame.width = event.w
     frame.height = event.h
     frame.create_walls()
+

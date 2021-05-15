@@ -1,6 +1,7 @@
 import math
 import copy
 from random import randint
+from obstacle import Polygon, Line
 import pygame
 from pygame import Color
 from pygame.math import Vector2
@@ -89,10 +90,22 @@ class Boid:
 
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
-            diff = self.pos - obstacle.pos
+            if isinstance(obstacle, Polygon):
+                for l in obstacle.lines:
+                    for o in l.circles:
+                        diff = self.pos - o.pos
+                        if diff.length() - o.radius < self.obstacle_radius:
+                            self.near_obstacles.append(o)
+            elif isinstance(obstacle, Line):
+                for o in obstacle.circles:
+                    diff = self.pos - o.pos
+                    if diff.length() - o.radius < self.obstacle_radius:
+                        self.near_obstacles.append(o)
+            else:
+                diff = self.pos - obstacle.pos
 
-            if diff.length() - obstacle.radius < self.obstacle_radius:
-                self.near_obstacles.append(obstacle)
+                if diff.length() - obstacle.radius < self.obstacle_radius:
+                    self.near_obstacles.append(obstacle)
 
 
     def rule1(self): 
