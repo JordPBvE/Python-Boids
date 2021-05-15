@@ -48,6 +48,4 @@ while should_run:
             process_resize_event(event, screen, frame)
     pygame.display.update()
 
-    if frame.debug_mode:
-        frame.print_collisions()
 
