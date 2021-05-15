@@ -47,7 +47,7 @@ class Line():
         circle_pos = self.begin_pos
 
         for i in range(circle_count):
-            circle = Circle(circle_pos, self.circle_radius, pygame.Color(255, 255, 255), False, self.frame, strength = 0.4)
+            circle = Circle(circle_pos, self.circle_radius, pygame.Color(255, 255, 255), False, self.frame, strength = 0.3)
             self.circles.append(circle)
             circle_pos = self.begin_pos + i*step
     

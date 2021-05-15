@@ -13,6 +13,7 @@ class Boid:
                 size = 6,
                 velocity = Vector2(1,1),
                 max_speed = 0.30,
+                min_speed = 0.15,
                 color = Color(255,255,255)): 
 
         self.frame = frame
@@ -24,6 +25,7 @@ class Boid:
         self.size = size
         self.velocity = velocity
         self.max_speed = max_speed
+        self.min_speed = min_speed
         self.color = color
 
 
@@ -79,6 +81,8 @@ class Boid:
 
         if magnitude > self.max_speed:
             self.velocity = self.velocity / (magnitude/self.max_speed)
+        if magnitude < self.min_speed:
+            self.velocity = self.velocity / (magnitude/self.min_speed)
 
     def identify_neighbors(self):
         self.neighbors = []
@@ -162,7 +166,7 @@ class Boid:
         # this factor (should be 0 <= factor <= 1) determines the distribution
         # between direct avoidance (moving directly away), and steering avoidance
         # (steering around obstacles)
-        factor_direct = .5
+        factor_direct = .4
 
         # calculate direct avoidance vector (moving directly away from obstacles)
         cumulative_diverging_direct = Vector2(0,0)
