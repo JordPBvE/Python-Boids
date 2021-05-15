@@ -37,7 +37,7 @@ class BoidFrame:
 
     def do_step(self, dt, screen):
         screen.fill(self.color_palette[0])
-        
+
         if self.mode == BoidFrame.MODE_DEBUG:
             self.debug_print_collisions()
             self.debug_draw_neighbour_connections(screen)
@@ -48,7 +48,7 @@ class BoidFrame:
         drawables = self.boid_list + self.obstacle_list + self.line_list
         for drawable in drawables:
             drawable.draw(screen)
-        
+
         if self.mode == BoidFrame.MODE_BUILD:
             pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)
 

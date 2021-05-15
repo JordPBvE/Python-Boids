@@ -8,7 +8,7 @@ from boidframe import BoidFrame
 def process_mouse_event(event, boidFrame):
     mouse_pos = Vector2()
     mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
-    
+
     if boidFrame.mode == BoidFrame.MODE_DEFAULT:
         handle_mouse_input_mode_default(event, boidFrame)
     elif boidFrame.mode == BoidFrame.MODE_DEBUG:
@@ -20,6 +20,7 @@ def process_mouse_event(event, boidFrame):
         ###############################################
         ## Add vertex to polygon that is being drawn ##
         ###############################################
+
 
 def handle_mouse_input_mode_default(event, boidFrame):
     pass
@@ -52,7 +53,6 @@ def handle_key_input_mode_build(event, boidFrame):
     if event.key == pygame.K_r:
         boidFrame.obstacle_list = []
         boidFrame.create_walls()
-
 
 
 def process_key_event(event, boidFrame):
