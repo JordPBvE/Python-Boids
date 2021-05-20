@@ -17,9 +17,7 @@ def process_mouse_event(event, boidFrame):
         handle_mouse_input_mode_build(event, boidFrame, mouse_pos)
     elif boidFrame.mode == BoidFrame.MODE_BUILD_POLYGON:
         pass
-        ###############################################
-        ## Add vertex to polygon that is being drawn ##
-        ###############################################
+
 
 
 def handle_mouse_input_mode_default(event, boidFrame):
@@ -79,3 +77,4 @@ def process_resize_event(event, screen, frame):
     frame.width = event.w
     frame.height = event.h
     frame.create_walls()
+

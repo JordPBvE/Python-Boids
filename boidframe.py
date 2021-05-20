@@ -22,7 +22,6 @@ class BoidFrame:
         self.mode = BoidFrame.MODE_DEFAULT
         self.boid_list = []
         self.obstacle_list = []
-        self.line_list = []
         self.obstacle_size = 50
         self.color_palette = get_random_color_palette()
 
@@ -48,6 +47,7 @@ class BoidFrame:
         drawables = self.boid_list + self.obstacle_list + self.line_list
         for drawable in drawables:
             drawable.draw(screen)
+
 
         if self.mode == BoidFrame.MODE_BUILD:
             pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)
@@ -83,9 +83,8 @@ class BoidFrame:
 
     def create_walls(self):
         self.obstacle_list = []
-        self.line_list = []
-        self.line_list.append(Line(Vector2(1,1), Vector2(1, self.height - 1), pygame.Color(255, 255, 255), self))
-        self.line_list.append(Line(Vector2(1,1), Vector2(self.width - 1, 1), pygame.Color(255, 255, 255), self))
-        self.line_list.append(Line(Vector2(1, self.height - 1), Vector2(self.width - 1, self.height - 1), pygame.Color(255, 255, 255), self))
-        self.line_list.append(Line(Vector2(self.width - 1,1), Vector2(self.width - 1, self.height - 1), pygame.Color(255, 255, 255), self))
+        self.obstacle_list.append(Line(Vector2(1,1), Vector2(1, self.height - 1), self.color_palette[-1], self))
+        self.obstacle_list.append(Line(Vector2(1,1), Vector2(self.width - 1, 1), self.color_palette[-1], self))
+        self.obstacle_list.append(Line(Vector2(1, self.height - 1), Vector2(self.width - 1, self.height - 1), self.color_palette[-1], self))
+        self.obstacle_list.append(Line(Vector2(self.width - 1,1), Vector2(self.width - 1, self.height - 1), self.color_palette[-1], self))
 

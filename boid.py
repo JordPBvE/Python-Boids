@@ -1,6 +1,7 @@
 import math
 import copy
 from random import randint
+from obstacle import Polygon, Line
 import pygame
 from pygame import Color
 from pygame.math import Vector2
@@ -12,6 +13,7 @@ class Boid:
                 size = 6,
                 velocity = Vector2(1,1),
                 max_speed = 0.30,
+                min_speed = 0.15,
                 color = Color(255,255,255)): 
 
         self.frame = frame
@@ -23,6 +25,7 @@ class Boid:
         self.size = size
         self.velocity = velocity
         self.max_speed = max_speed
+        self.min_speed = min_speed
         self.color = color
 
 
@@ -68,6 +71,8 @@ class Boid:
 
         if magnitude > self.max_speed:
             self.velocity = self.velocity / (magnitude/self.max_speed)
+        if magnitude < self.min_speed:
+            self.velocity = self.velocity / (magnitude/self.min_speed)
 
     def identify_neighbors(self):
         self.neighbors = []
@@ -79,10 +84,22 @@ class Boid:
 
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
-            diff = self.pos - obstacle.pos
+            if isinstance(obstacle, Polygon):
+                for l in obstacle.lines:
+                    for o in l.circles:
+                        diff = self.pos - o.pos
+                        if diff.length() - o.radius < self.obstacle_radius:
+                            self.near_obstacles.append(o)
+            elif isinstance(obstacle, Line):
+                for o in obstacle.circles:
+                    diff = self.pos - o.pos
+                    if diff.length() - o.radius < self.obstacle_radius:
+                        self.near_obstacles.append(o)
+            else:
+                diff = self.pos - obstacle.pos
 
-            if diff.length() - obstacle.radius < self.obstacle_radius:
-                self.near_obstacles.append(obstacle)
+                if diff.length() - obstacle.radius < self.obstacle_radius:
+                    self.near_obstacles.append(obstacle)
 
 
     def rule1(self): 
@@ -139,7 +156,7 @@ class Boid:
         # this factor (should be 0 <= factor <= 1) determines the distribution
         # between direct avoidance (moving directly away), and steering avoidance
         # (steering around obstacles)
-        factor_direct = .5
+        factor_direct = .4
 
         # calculate direct avoidance vector (moving directly away from obstacles)
         cumulative_diverging_direct = Vector2(0,0)
