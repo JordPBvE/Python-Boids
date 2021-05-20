@@ -46,16 +46,6 @@ class Boid:
         foot_2 = self.pos - s + 0.5 * s_left
         
         # pygame.draw.circle(surface, self.color,self.pos, self.checkradius, width = 1)
-        
-        if self.frame.debug_mode:
-            for boid in self.neighbors:
-                diff = self.pos - boid.pos
-                if diff.length() < self.checkradius:
-                    pygame.draw.line(surface, pygame.Color(100, 100, 100), self.pos, boid.pos, width = 1)
-            for obstacle in self.near_obstacles:
-                diff = self.pos - obstacle.pos
-                if diff.length() < self.checkradius + obstacle.radius:
-                    pygame.draw.line(surface, pygame.Color(200, 100, 100), self.pos, obstacle.pos, width = 2)
 
         pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
 
