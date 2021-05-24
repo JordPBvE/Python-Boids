@@ -44,7 +44,7 @@ class BoidFrame:
 
         for b in self.boid_list:
             b.do_step(dt)
-        drawables = self.boid_list + self.obstacle_list + self.line_list
+        drawables = self.boid_list + self.obstacle_list
         for drawable in drawables:
             drawable.draw(screen)
 
