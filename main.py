@@ -10,16 +10,20 @@ from boidframe import BoidFrame
 from obstacle import Line
 from util.palettes import get_random_color_palette
 from util.input import *
+from messagedisplay import MessageDisplay
+
 
 width = 1024
 height = 1024
 
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((width, height), flags=pygame.RESIZABLE)
+pygame.display.set_caption("    [boids]")
 pygame.init()
 
 frame = BoidFrame(width=width, height=height)
 color_palette = get_random_color_palette()
+message_display = MessageDisplay()
 
 # Create boids:
 boid_count = 40
@@ -40,16 +44,15 @@ frame.create_walls()
 should_run = True
 while should_run:
     dt = clock.tick(60)
-
     frame.do_step(dt, screen)
-
+    message_display.render_message(screen)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             should_run = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            process_mouse_event(event, frame)
+            process_mouse_event(event, frame, message_display)
         elif event.type == pygame.KEYDOWN:
-            process_key_event(event, frame)
+            process_key_event(event, frame, message_display)
         elif event.type == pygame.VIDEORESIZE:
             process_resize_event(event, screen, frame)
     pygame.display.update()

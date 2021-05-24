@@ -7,7 +7,7 @@ from boidframe import BoidFrame
 from framemodes import FrameModes
 
 
-def process_mouse_event(event, boidFrame):
+def process_mouse_event(event, boidFrame, message_display):
     mouse_pos = Vector2()
     mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
 
@@ -25,9 +25,11 @@ def handle_mouse_input_mode_default(event, boidFrame):
     pass
 
 
-def handle_key_input_mode_default(event, boidFrame):
+def handle_key_input_mode_default(event, boidFrame, message_display):
     if event.key == pygame.K_m:
         boidFrame.mode = FrameModes.MODE_FOLLOW_MOUSE
+        message_display.show_message("Mouse following mode activated. Boids will now follow the mouse.")
+
 
 
 def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
@@ -62,9 +64,9 @@ def handle_key_input_mode_build(event, boidFrame):
         boidFrame.mode = FrameModes.MODE_DEFAULT
 
 
-def process_key_event(event, boidFrame):
+def process_key_event(event, boidFrame, message_display):
     if boidFrame.mode == FrameModes.MODE_DEFAULT:
-        handle_key_input_mode_default(event, boidFrame)
+        handle_key_input_mode_default(event, boidFrame, message_display)
     elif boidFrame.mode == FrameModes.MODE_FOLLOW_MOUSE:
         pass
     elif boidFrame.mode == FrameModes.MODE_DEBUG:
@@ -76,13 +78,18 @@ def process_key_event(event, boidFrame):
 
     if event.key == pygame.K_p:
         boidFrame.paused = not boidFrame.paused
+        msg = "Paused." if boidFrame.paused else "Resumed."
+        message_display.show_message(msg)
     if event.key == pygame.K_TAB:
         boidFrame.change_color_palette(util.palettes.get_random_color_palette())
     if event.key == pygame.K_d:
         boidFrame.mode = FrameModes.MODE_DEBUG
+        message_display.show_message("Enabled debug mode.")
     if event.key == pygame.K_b:
         boidFrame.mode = FrameModes.MODE_BUILD
+        message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.")
     if event.key in (pygame.K_q, pygame.K_ESCAPE):
+        message_display.show_message("Now in default mode.")
         boidFrame.mode = FrameModes.MODE_DEFAULT
 
 

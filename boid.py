@@ -223,9 +223,7 @@ class Boid:
         )
 
     def move_toward_mouse(self):
-        if (
-            self.frame.mode == FrameModes.MODE_FOLLOW_MOUSE
-        ):  # TODO: this is a bit hacky,
+        if self.frame.mode == FrameModes.MODE_FOLLOW_MOUSE:
             mouse_pos = Vector2()
             mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
             margin = 0.15
