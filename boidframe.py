@@ -22,6 +22,7 @@ class BoidFrame:
         self.obstacle_list = []
         self.obstacle_size = 50
         self.color_palette = get_random_color_palette()
+        self.paused = False
 
     def add_boid(self, boid):
         boid.color = random.choice(self.color_palette.boid_palette)
@@ -35,13 +36,15 @@ class BoidFrame:
     def do_step(self, dt, screen):
         screen.fill(self.color_palette.background_color)
 
+        if not self.paused:
+            for b in self.boid_list:
+                b.do_step(dt)
+
         if self.mode == FrameModes.MODE_DEBUG:
             # self.debug_print_collisions()
             self.debug_draw_neighbour_connections(screen)
             self.debug_draw_obstacle_connections(screen)
 
-        for b in self.boid_list:
-            b.do_step(dt)
         drawables = self.boid_list + self.obstacle_list
         for drawable in drawables:
             drawable.draw(screen)

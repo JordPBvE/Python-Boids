@@ -75,6 +75,8 @@ def process_key_event(event, boidFrame):
         pass
 
     if event.key == pygame.K_p:
+        boidFrame.paused = not boidFrame.paused
+    if event.key == pygame.K_TAB:
         boidFrame.change_color_palette(util.palettes.get_random_color_palette())
     if event.key == pygame.K_d:
         boidFrame.mode = FrameModes.MODE_DEBUG
@@ -84,7 +86,7 @@ def process_key_event(event, boidFrame):
         boidFrame.mode = FrameModes.MODE_DEFAULT
 
 
-def process_resize_event(event, screen, frame):
-    frame.width = event.w
-    frame.height = event.h
-    frame.create_walls()
+def process_resize_event(event, screen, boidFrame):
+    boidFrame.width = event.w
+    boidFrame.height = event.h
+    boidFrame.create_walls()
