@@ -16,6 +16,7 @@ class BoidFrame:
     MODE_DEBUG = 1
     MODE_BUILD = 2
     MODE_BUILD_POLYGON = 3
+
     def __init__(self, width=256, height=256):
         self.width = width
         self.height = height
@@ -26,7 +27,7 @@ class BoidFrame:
         self.color_palette = get_random_color_palette()
 
     def add_boid(self, boid):
-        boid.color = random.choice(self.color_palette[1:-1])
+        boid.color = random.choice(self.color_palette.boid_palette)
         self.boid_list.append(boid)
         boid.frame = self
 
@@ -35,7 +36,7 @@ class BoidFrame:
         obstacle.frame = self
 
     def do_step(self, dt, screen):
-        screen.fill(self.color_palette[0])
+        screen.fill(self.color_palette.background_color)
 
         if self.mode == BoidFrame.MODE_DEBUG:
             self.debug_print_collisions()
@@ -48,15 +49,22 @@ class BoidFrame:
         for drawable in drawables:
             drawable.draw(screen)
 
-
         if self.mode == BoidFrame.MODE_BUILD:
             pygame.draw.circle(screen, (255, 255, 255), pygame.mouse.get_pos(), self.obstacle_size, width = 1)
 
-
     def change_color_palette(self, palette):
         self.color_palette = palette
+        for obstacle in self.obstacle_list:
+            obstacle.color = self.color_palette.obstacle_color
         for boid in self.boid_list:
-            boid.color = random.choice(self.color_palette[1:-1])
+            boid.color = random.choice(self.color_palette.boid_palette)
+
+    def create_walls(self):
+        self.obstacle_list = []
+        self.obstacle_list.append(Line(Vector2(1,1), Vector2(1, self.height - 1), self.color_palette.obstacle_color, self))
+        self.obstacle_list.append(Line(Vector2(1,1), Vector2(self.width - 1, 1), self.color_palette.obstacle_color, self))
+        self.obstacle_list.append(Line(Vector2(1, self.height - 1), Vector2(self.width - 1, self.height - 1), self.color_palette.obstacle_color, self))
+        self.obstacle_list.append(Line(Vector2(self.width - 1,1), Vector2(self.width - 1, self.height - 1), self.color_palette.obstacle_color, self))
 
     def debug_draw_neighbour_connections(self, surface):
         for boid in self.boid_list:
@@ -80,11 +88,4 @@ class BoidFrame:
                     collisions += 1
             if collisions > 0:
                 print(f"{datetime.now()} | obstacle at pos {(obstacle.pos.x, obstacle.pos.y)} has {collisions} collisions. )")
-
-    def create_walls(self):
-        self.obstacle_list = []
-        self.obstacle_list.append(Line(Vector2(1,1), Vector2(1, self.height - 1), self.color_palette[-1], self))
-        self.obstacle_list.append(Line(Vector2(1,1), Vector2(self.width - 1, 1), self.color_palette[-1], self))
-        self.obstacle_list.append(Line(Vector2(1, self.height - 1), Vector2(self.width - 1, self.height - 1), self.color_palette[-1], self))
-        self.obstacle_list.append(Line(Vector2(self.width - 1,1), Vector2(self.width - 1, self.height - 1), self.color_palette[-1], self))
 

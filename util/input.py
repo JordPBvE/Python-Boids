@@ -33,7 +33,7 @@ def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
     # e.g. (True, False, False) when only LMB was pressed
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]: # LMB
-        new_circle = Circle(mouse_pos, boidFrame.obstacle_size, boidFrame.color_palette[-1], True)
+        new_circle = Circle(mouse_pos, boidFrame.obstacle_size, boidFrame.color_palette.obstacle_color, True)
         new_circle.frame = boidFrame
         boidFrame.obstacle_list.append(new_circle)
     if buttons_pressed[1]: # RMB

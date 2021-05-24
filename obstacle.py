@@ -20,7 +20,6 @@ class Circle():
         self.strength = strength
 
     def draw(self, surface):
-        self.color = self.frame.color_palette[-1]
         if (self.visible):
             pygame.draw.circle(surface, self.color, self.pos, self.radius)
 
@@ -67,10 +66,10 @@ class Polygon():
     def add_vertex(self, position):
         self.verteces.append(position)
         if len(self.vertces) >= 2:
-            self.lines.append(Line(self.verteces[-2], self.verteces[-1], self.frame.color_palette[-1], self.frame))
+            self.lines.append(Line(self.verteces[-2], self.verteces[-1], self.frame.color_palette.obstacle_color, self.frame))
     
     def end_polygon(self):
-        self.lines.append(Line(self.verteces[-1], self.verteces[0], self.frame.color_palette[-1], self.frame))
+        self.lines.append(Line(self.verteces[-1], self.verteces[0], self.frame.color_palette.obstacle_color, self.frame))
 
     def draw(self):
         for line in self.lines:
