@@ -18,7 +18,7 @@ def process_mouse_event(event, boidFrame, message_display):
     elif boidFrame.mode == FrameModes.MODE_BUILD:
         handle_mouse_input_mode_build(event, boidFrame, mouse_pos)
     elif boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
-        pass
+        handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos)
 
 
 def handle_mouse_input_mode_default(event, boidFrame):
@@ -30,7 +30,13 @@ def handle_key_input_mode_default(event, boidFrame, message_display):
         boidFrame.mode = FrameModes.MODE_FOLLOW_MOUSE
         message_display.show_message("Mouse following mode activated. Boids will now follow the mouse.")
 
-
+def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
+    buttons_pressed = pygame.mouse.get_pressed()
+    if buttons_pressed[0]:  # LMB
+        boidFrame.polygon_verteces.append(mouse_pos)
+    if buttons_pressed[2]:  # RMB
+        boidFrame.create_polygon()
+        boidFrame.polygon_verteces = []
 
 def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
     # get the tuple of values for which mouse button was clicked
@@ -45,8 +51,6 @@ def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
         )
         new_circle.frame = boidFrame
         boidFrame.obstacle_list.append(new_circle)
-    if buttons_pressed[1]:  # RMB
-        boidFrame.mode = FrameModes.MODE_BUILD_POLYGON
     # Handle scroling:
     if event.button == 4:
         if boidFrame.obstacle_size < 300:
@@ -88,6 +92,13 @@ def process_key_event(event, boidFrame, message_display):
     if event.key == pygame.K_b:
         boidFrame.mode = FrameModes.MODE_BUILD
         message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.")
+    if event.key == pygame.K_SPACE:
+        if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
+            boidFrame.mode = FrameModes.MODE_BUILD
+            message_display.show_message("You can now place circular obstacles")
+        elif boidFrame.mode == FrameModes.MODE_BUILD:
+            boidFrame.mode = FrameModes.MODE_BUILD_POLYGON
+            message_display.show_message("You can now place Polygons")
     if event.key in (pygame.K_q, pygame.K_ESCAPE):
         message_display.show_message("Now in default mode.")
         boidFrame.mode = FrameModes.MODE_DEFAULT

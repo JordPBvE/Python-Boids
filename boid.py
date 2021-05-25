@@ -159,7 +159,7 @@ class Boid:
         # this factor (should be 0 <= factor <= 1) determines the distribution
         # between direct avoidance (moving directly away), and steering avoidance
         # (steering around obstacles)
-        factor_direct = 0.4
+        factor_direct = 0.45
 
         # calculate direct avoidance vector (moving directly away from obstacles)
         cumulative_diverging_direct = Vector2(0, 0)

@@ -23,7 +23,7 @@ class Circle:
 
     def draw(self, surface):
         if self.visible:
-            pygame.draw.circle(surface, self.color, self.pos, self.radius)
+            pygame.draw.circle(surface, self.color, self.pos, self.radius, width = 1)
 
 
 class Line:
@@ -44,50 +44,42 @@ class Line:
         step = (self.end_pos - self.begin_pos) / circle_count
         circle_pos = self.begin_pos
 
-        for i in range(circle_count):
+        for i in range(circle_count + 1):
             circle = Circle(
-                circle_pos,
-                self.circle_radius,
-                pygame.Color(255, 255, 255),
-                False,
-                self.frame,
-                strength=0.3,
+                pos = circle_pos,
+                radius = self.circle_radius,
+                color = self.color,
+                visible = True,
+                frame = self.frame,
+                strength = 0.3,
             )
             self.circles.append(circle)
             circle_pos = self.begin_pos + i * step
 
     def draw(self, surface):
         pygame.draw.line(surface, self.color, self.begin_pos, self.end_pos, width=2)
+        for circle in self.circles:
+            circle.draw(surface)
 
 
 class Polygon:
     def __init__(self, color, frame, vertices=[], lines=[]):
         self.color = color
+        self.frame = frame
         self.vertices = vertices
         self.lines = lines
+        self.create()
 
-    def add_vertex(self, position):
-        self.vertices.append(position)
-        if len(self.vertces) >= 2:
+    def create(self):
+        for i in range(len(self.vertices)):
             self.lines.append(
                 Line(
-                    self.vertices[-2],
-                    self.vertices[-1],
+                    self.vertices[i],
+                    self.vertices[(i+1)%len(self.vertices)],
                     self.frame.color_palette.obstacle_color,
                     self.frame,
-                )
-            )
+                ))
 
-    def end_polygon(self):
-        self.lines.append(
-            Line(
-                self.vertices[-1],
-                self.vertices[0],
-                self.frame.color_palette.obstacle_color,
-                self.frame,
-            )
-        )
-
-    def draw(self):
+    def draw(self, surface):
         for line in self.lines:
-            line.draw()
+            line.draw(surface)
