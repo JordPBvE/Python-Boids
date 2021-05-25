@@ -83,7 +83,7 @@ def process_key_event(event, boidFrame, message_display):
     if event.key == pygame.K_p:
         boidFrame.paused = not boidFrame.paused
         msg = "Paused." if boidFrame.paused else "Resumed."
-        message_display.show_message(msg)
+        message_display.show_message(msg, 1)
     elif event.key == pygame.K_RIGHT:
         boidFrame.next_palette()
         message_display.show_message(f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`")
@@ -92,10 +92,12 @@ def process_key_event(event, boidFrame, message_display):
         message_display.show_message(f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`")
     elif event.key == pygame.K_d:
         boidFrame.mode = FrameModes.MODE_DEBUG
-        message_display.show_message("Enabled debug mode.")
+        message_display.show_message("Enabled debug mode.", 2)
     elif event.key == pygame.K_b:
         boidFrame.mode = FrameModes.MODE_BUILD
-        message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.")
+        message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.", 4)
+    elif event.key in (pygame.K_q, pygame.K_ESCAPE):
+        message_display.show_message("Now in default mode.", 2)
     if event.key == pygame.K_SPACE:
         if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
             boidFrame.mode = FrameModes.MODE_BUILD
@@ -103,9 +105,6 @@ def process_key_event(event, boidFrame, message_display):
         elif boidFrame.mode == FrameModes.MODE_BUILD:
             boidFrame.mode = FrameModes.MODE_BUILD_POLYGON
             message_display.show_message("You can now place Polygons")
-    if event.key in (pygame.K_q, pygame.K_ESCAPE):
-        message_display.show_message("Now in default mode.")
-        boidFrame.mode = FrameModes.MODE_DEFAULT
 
 
 def process_resize_event(event, screen, boidFrame):
