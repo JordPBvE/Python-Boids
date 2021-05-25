@@ -23,7 +23,7 @@ class Circle:
 
     def draw(self, surface):
         if self.visible:
-            pygame.draw.circle(surface, self.frame.palette_selector.palette().obstacle_color, self.pos, self.radius, width = 1)
+            pygame.draw.circle(surface, self.frame.palette_selector.palette().obstacle_color, self.pos, self.radius)
 
 
 class Line:
@@ -83,3 +83,7 @@ class Polygon:
     def draw(self, surface):
         for line in self.lines:
             line.draw(surface)
+        if len(self.vertices) > 2:
+            pygame.draw.polygon(surface, self.frame.palette_selector.palette().obstacle_color, self.vertices)
+        elif len(self.vertices) == 2:
+            pygame.draw.line(surface, self.frame.palette_selector.palette().obstacle_color, self.vertices[0], self.vertices[1])

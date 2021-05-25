@@ -51,7 +51,7 @@ class BoidFrame:
             drawable.draw(screen)
 
         if self.mode == FrameModes.MODE_BUILD_POLYGON and len(self.polygon_verteces) > 1:
-            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces + [pygame.mouse.get_pos()], width = 1)
+            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces + [pygame.mouse.get_pos()], width = 2)
         elif len(self.polygon_verteces) == 1:
             pygame.draw.line(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces[0], pygame.mouse.get_pos())
 
