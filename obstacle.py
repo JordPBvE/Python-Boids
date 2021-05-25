@@ -13,6 +13,7 @@ class Circle:
         visible=True,
         frame=None,
         strength=1,
+        permanent = False
     ):
         self.frame = frame
         self.pos = pos
@@ -20,6 +21,7 @@ class Circle:
         self.color = color
         self.visible = visible
         self.strength = strength
+        self.permanent = permanent
 
     def draw(self, surface):
         if self.visible:
@@ -27,7 +29,13 @@ class Circle:
 
 
 class Line:
-    def __init__(self, begin_pos, end_pos, color, frame):
+    def __init__(self, 
+        begin_pos, 
+        end_pos, 
+        color, 
+        frame, 
+        permanent = False
+        ):
 
         self.frame = frame
         self.begin_pos = begin_pos
@@ -36,6 +44,8 @@ class Line:
         self.circles = []
         self.length = (begin_pos - end_pos).length()
         self.circle_radius = 10
+        self.permanent = permanent
+        
 
         self.populate()
 
@@ -63,11 +73,20 @@ class Line:
 
 
 class Polygon:
-    def __init__(self, color, frame, vertices=[], lines=[]):
+    def __init__(self, 
+        color, 
+        frame, 
+        vertices=[], 
+        lines=[],
+        permanent = False
+    ):
         self.color = color
         self.frame = frame
         self.vertices = vertices
         self.lines = lines
+        self.permanent = permanent
+        
+
         self.create()
 
     def create(self):

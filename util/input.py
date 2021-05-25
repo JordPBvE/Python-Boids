@@ -99,6 +99,9 @@ def process_key_event(event, boidFrame, message_display):
     elif event.key in (pygame.K_q, pygame.K_ESCAPE):
         boidFrame.mode = FrameModes.MODE_DEFAULT
         message_display.show_message("Now in default mode.", 2)
+    elif event.key == pygame.K_BACKSPACE: 
+        if not boidFrame.obstacle_list[-1].permanent:
+            boidFrame.obstacle_list.pop()
     if event.key == pygame.K_SPACE:
         if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
             boidFrame.mode = FrameModes.MODE_BUILD

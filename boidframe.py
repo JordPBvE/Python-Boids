@@ -79,39 +79,48 @@ class BoidFrame:
         self.update_colors()
 
     def create_walls(self):
-        self.obstacle_list = []
-        self.obstacle_list.append(
+        new_walls = []
+        new_walls.append(
             Line(
                 Vector2(1, 1),
                 Vector2(1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
+                permanent = True
             )
         )
-        self.obstacle_list.append(
+        new_walls.append(
             Line(
                 Vector2(1, 1),
                 Vector2(self.width - 1, 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
+                permanent = True
             )
         )
-        self.obstacle_list.append(
+        new_walls.append(
             Line(
                 Vector2(1, self.height - 1),
                 Vector2(self.width - 1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
+                permanent = True
             )
         )
-        self.obstacle_list.append(
+        new_walls.append(
             Line(
                 Vector2(self.width - 1, 1),
                 Vector2(self.width - 1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
+                permanent = True
             )
         )
+        if self.obstacle_list == []:
+            self.obstacle_list += new_walls
+        else:
+            for i in range(len(new_walls)):
+                self.obstacle_list[i] = new_walls[i]
     
     def create_polygon(self):
         self.obstacle_list.append(
