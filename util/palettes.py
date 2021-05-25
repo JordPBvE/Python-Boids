@@ -71,9 +71,9 @@ color_palette_neon = BoidFramePalette(
 )
 
 color_palette_red_grey = BoidFramePalette(
-    name="Red / Grey",
-    background_color=Color(186, 195, 202),
-    obstacle_color=Color(40, 70, 90),
+    name="Red",
+    background_color=Color(63, 0, 0),
+    obstacle_color=Color(30, 31, 45),
     boid_palette=[
         Color(254, 34, 48),
         Color(154, 41, 48),
@@ -97,7 +97,7 @@ color_palette_hackergreen = BoidFramePalette(
 
 color_palette_sand = BoidFramePalette(
     name="Sand",
-    background_color=Color(20, 12, 4),
+    background_color=Color(194, 178, 128),
     obstacle_color=Color(245, 242, 208),
     boid_palette=[
         Color(228, 208, 179),
@@ -134,7 +134,7 @@ color_palette_summer = BoidFramePalette(
 color_palette_greyscale = BoidFramePalette(
     name="Greyscale",
     background_color=Color(10, 10, 10),
-    obstacle_color=Color(220, 200, 60),
+    obstacle_color=Color(192,160,32),
     boid_palette=[
         Color(170, 170, 170),
         Color(120, 120, 120),
@@ -169,18 +169,63 @@ color_palette_durag_activity = BoidFramePalette(
     ],
 )
 
+color_palette_monochrome = BoidFramePalette(
+    name="Monochrome",
+    background_color=Color(0, 20, 0),
+    obstacle_color=Color(0, 60, 0),
+    boid_palette=[
+        Color(0, 210, 40),
+        Color(51, 255, 30),
+        Color(20, 150, 0),
+    ],
+)
+
+color_palette_terminal = BoidFramePalette(
+    name="Terminal",
+    background_color=Color(48, 10, 38),
+    obstacle_color=Color(220, 220, 220),
+    boid_palette=[
+        Color(123, 154, 255),
+        Color(231, 30, 216),
+        Color(111, 208, 52),
+    ],
+)
+
+color_palette_the_grand_budapest = BoidFramePalette(
+    name="The Grand Budapest",
+    background_color=Color(191, 124, 142),
+    obstacle_color=Color(183, 17, 16),
+    boid_palette=[
+        Color(114, 148, 212),
+        Color(198, 205, 247),
+        Color(221, 126, 146),
+        Color(246, 171, 178),
+        Color(90, 44, 90),
+    ],
+)
+
+color_palette_Microsoft = BoidFramePalette(
+    name="Microsoft",
+    background_color=Color(247, 247, 240),
+    obstacle_color=Color(150, 150, 140),
+    boid_palette=[
+        Color(242, 80, 34),
+        Color(127, 186, 0),
+        Color(0, 164, 239),
+        Color(255, 185, 0),
+    ],
+)
+
 all_palettes = [
-    color_palette_clown,
-    color_palette_sunny,
-    color_palette_neon,
-    color_palette_hackergreen,
     color_palette_sand,
     color_palette_red_grey,
-    color_palette_holland,
-    color_palette_summer,
     color_palette_greyscale,
     color_palette_icy,
     color_palette_durag_activity,
+    color_palette_monochrome,
+    color_palette_terminal,
+    color_palette_the_grand_budapest,
+    color_palette_Microsoft,
 ]
 
 # Get one of the above palettes randomly:
