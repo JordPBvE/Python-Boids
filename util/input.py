@@ -97,6 +97,7 @@ def process_key_event(event, boidFrame, message_display):
         boidFrame.mode = FrameModes.MODE_BUILD
         message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.", 4)
     elif event.key in (pygame.K_q, pygame.K_ESCAPE):
+        boidFrame.mode = FrameModes.MODE_DEFAULT
         message_display.show_message("Now in default mode.", 2)
     if event.key == pygame.K_SPACE:
         if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
