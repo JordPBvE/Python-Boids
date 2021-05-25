@@ -48,7 +48,7 @@ class Line:
             circle = Circle(
                 pos = circle_pos,
                 radius = self.circle_radius,
-                color = self.color,
+                color = self.frame.palette_selector.palette().obstacle_color,
                 visible = True,
                 frame = self.frame,
                 strength = 0.3,
@@ -76,7 +76,7 @@ class Polygon:
                 Line(
                     self.vertices[i],
                     self.vertices[(i+1)%len(self.vertices)],
-                    self.frame.color_palette.obstacle_color,
+                    self.frame.palette_selector.palette().obstacle_color,
                     self.frame,
                 ))
 
