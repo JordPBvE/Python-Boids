@@ -5,12 +5,37 @@ from pygame import Color
 
 @dataclass
 class BoidFramePalette:
+    name: str
     background_color: Color
     obstacle_color: Color
     boid_palette: list
 
 
+class PaletteSelector:
+    # Class to abstract away the selection of a palette
+    def __init__(self):
+        self.current_palette_index = 0
+        self.current_palette = all_palettes[0]
+
+    def nxt(self):
+        self.current_palette_index += 1
+        self.current_palette_index %= len(all_palettes)
+        self.current_palette = all_palettes[self.current_palette_index]
+
+    def prv(self):
+        self.current_palette_index -= 1
+        self.current_palette_index %= len(all_palettes)
+        self.current_palette = all_palettes[self.current_palette_index]
+
+    def random(self):
+        self.curent_palette = get_random_color_palette()
+
+    def palette(self):
+        return self.current_palette
+
+
 color_palette_clown = BoidFramePalette(
+    name="Clown",
     background_color=Color(26, 81, 115),
     obstacle_color=Color(140, 40, 40),
     boid_palette=[
@@ -22,6 +47,7 @@ color_palette_clown = BoidFramePalette(
 )
 
 color_palette_sunny = BoidFramePalette(
+    name="Sunny",
     background_color=Color(255, 195, 0),
     obstacle_color=Color(40, 26, 13),
     boid_palette=[
@@ -32,7 +58,8 @@ color_palette_sunny = BoidFramePalette(
     ],
 )
 
-color_palette_purple = BoidFramePalette(
+color_palette_neon = BoidFramePalette(
+    name = "Neon",
     background_color=Color(0, 0, 0),
     obstacle_color=Color(176, 6, 214),
     boid_palette=[
@@ -44,6 +71,7 @@ color_palette_purple = BoidFramePalette(
 )
 
 color_palette_red_grey = BoidFramePalette(
+    name = "Red / Grey",
     background_color=Color(186, 195, 202),
     obstacle_color=Color(40, 70, 90),
     boid_palette=[
@@ -55,6 +83,7 @@ color_palette_red_grey = BoidFramePalette(
 )
 
 color_palette_hackergreen = BoidFramePalette(
+    name = "Hacker Green",
     background_color=Color(0, 3, 0),
     obstacle_color=Color(220, 230, 70),
     boid_palette=[
@@ -67,6 +96,7 @@ color_palette_hackergreen = BoidFramePalette(
 )
 
 color_palette_sand = BoidFramePalette(
+    name = "Sand",
     background_color=Color(20, 12, 4),
     obstacle_color=Color(245, 242, 208),
     boid_palette=[
@@ -78,6 +108,7 @@ color_palette_sand = BoidFramePalette(
 )
 
 color_palette_holland = BoidFramePalette(
+    name = "Holland",
     background_color=Color(5, 5, 5),
     obstacle_color=Color(128, 0, 32),
     boid_palette=[
@@ -89,6 +120,7 @@ color_palette_holland = BoidFramePalette(
 )
 
 color_palette_summer = BoidFramePalette(
+    name = "Summer",
     background_color=Color(200, 200, 200),
     obstacle_color=Color(255, 216, 61),
     boid_palette=[
@@ -100,6 +132,7 @@ color_palette_summer = BoidFramePalette(
 )
 
 color_palette_greyscale = BoidFramePalette(
+    name = "Greyscale",
     background_color=Color(10, 10, 10),
     obstacle_color=Color(220, 200, 60),
     boid_palette=[
@@ -111,9 +144,10 @@ color_palette_greyscale = BoidFramePalette(
     ],
 )
 
-color_palette_ice = BoidFramePalette(
-    background_color=Color(10, 10, 45),
-    obstacle_color=Color(13, 71, 161),
+color_palette_icy = BoidFramePalette(
+    name = "Icy",
+    background_color=Color(10, 10, 30),
+    obstacle_color=Color(230, 230, 255),
     boid_palette=[
         Color(187, 222, 251),
         Color(144, 202, 249),
@@ -124,6 +158,7 @@ color_palette_ice = BoidFramePalette(
 )
 
 color_palette_durag_activity = BoidFramePalette(
+    name = "Durag Activity",
     background_color=Color(40, 25, 25),
     obstacle_color=Color(188, 170, 164),
     boid_palette=[
@@ -134,18 +169,17 @@ color_palette_durag_activity = BoidFramePalette(
     ],
 )
 
-
 all_palettes = [
     color_palette_clown,
     color_palette_sunny,
-    color_palette_purple,
+    color_palette_neon,
     color_palette_hackergreen,
     color_palette_sand,
     color_palette_red_grey,
     color_palette_holland,
     color_palette_summer,
     color_palette_greyscale,
-    color_palette_ice,
+    color_palette_icy,
     color_palette_durag_activity,
 ]
 

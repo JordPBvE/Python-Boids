@@ -40,7 +40,7 @@ def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
         new_circle = Circle(
             mouse_pos,
             boidFrame.obstacle_size,
-            boidFrame.color_palette.obstacle_color,
+            boidFrame.palette_selector.palette().obstacle_color,
             True,
         )
         new_circle.frame = boidFrame
@@ -80,15 +80,19 @@ def process_key_event(event, boidFrame, message_display):
         boidFrame.paused = not boidFrame.paused
         msg = "Paused." if boidFrame.paused else "Resumed."
         message_display.show_message(msg)
-    if event.key == pygame.K_TAB:
-        boidFrame.change_color_palette(util.palettes.get_random_color_palette())
-    if event.key == pygame.K_d:
+    elif event.key == pygame.K_RIGHT:
+        boidFrame.next_palette()
+        message_display.show_message(f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`")
+    elif event.key == pygame.K_LEFT:
+        boidFrame.prev_palette()
+        message_display.show_message(f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`")
+    elif event.key == pygame.K_d:
         boidFrame.mode = FrameModes.MODE_DEBUG
         message_display.show_message("Enabled debug mode.")
-    if event.key == pygame.K_b:
+    elif event.key == pygame.K_b:
         boidFrame.mode = FrameModes.MODE_BUILD
         message_display.show_message("Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.")
-    if event.key in (pygame.K_q, pygame.K_ESCAPE):
+    elif event.key in (pygame.K_q, pygame.K_ESCAPE):
         message_display.show_message("Now in default mode.")
         boidFrame.mode = FrameModes.MODE_DEFAULT
 

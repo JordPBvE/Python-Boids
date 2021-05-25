@@ -73,7 +73,7 @@ class Polygon:
                 Line(
                     self.vertices[-2],
                     self.vertices[-1],
-                    self.frame.color_palette.obstacle_color,
+                    self.frame.palette_selector.palette().obstacle_color,
                     self.frame,
                 )
             )
@@ -83,7 +83,7 @@ class Polygon:
             Line(
                 self.vertices[-1],
                 self.vertices[0],
-                self.frame.color_palette.obstacle_color,
+                self.frame.palette_selector.palette().obstacle_color,
                 self.frame,
             )
         )

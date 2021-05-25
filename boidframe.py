@@ -8,7 +8,7 @@ from pygame.math import Vector2
 from boid import Boid
 from framemodes import FrameModes
 from obstacle import Line
-from util.palettes import get_random_color_palette
+from util.palettes import PaletteSelector
 
 
 class BoidFrame:
@@ -21,11 +21,11 @@ class BoidFrame:
         self.boid_list = []
         self.obstacle_list = []
         self.obstacle_size = 50
-        self.color_palette = get_random_color_palette()
+        self.palette_selector = PaletteSelector()
         self.paused = False
 
     def add_boid(self, boid):
-        boid.color = random.choice(self.color_palette.boid_palette)
+        boid.color = random.choice(self.palette_selector.palette().boid_palette)
         self.boid_list.append(boid)
         boid.frame = self
 
@@ -34,7 +34,7 @@ class BoidFrame:
         obstacle.frame = self
 
     def do_step(self, dt, screen):
-        screen.fill(self.color_palette.background_color)
+        screen.fill(self.palette_selector.palette().background_color)
 
         if not self.paused:
             for b in self.boid_list:
@@ -58,12 +58,19 @@ class BoidFrame:
                 width=1,
             )
 
-    def change_color_palette(self, palette):
-        self.color_palette = palette
+    def update_colors(self):
         for obstacle in self.obstacle_list:
-            obstacle.color = self.color_palette.obstacle_color
+            obstacle.color = self.palette_selector.palette().obstacle_color
         for boid in self.boid_list:
-            boid.color = random.choice(self.color_palette.boid_palette)
+            boid.color = random.choice(self.palette_selector.palette().boid_palette)
+
+    def next_palette(self):
+        self.palette_selector.nxt()
+        self.update_colors()
+
+    def prev_palette(self):
+        self.palette_selector.prv()
+        self.update_colors()
 
     def create_walls(self):
         self.obstacle_list = []
@@ -71,7 +78,7 @@ class BoidFrame:
             Line(
                 Vector2(1, 1),
                 Vector2(1, self.height - 1),
-                self.color_palette.obstacle_color,
+                self.palette_selector.palette().obstacle_color,
                 self,
             )
         )
@@ -79,7 +86,7 @@ class BoidFrame:
             Line(
                 Vector2(1, 1),
                 Vector2(self.width - 1, 1),
-                self.color_palette.obstacle_color,
+                self.palette_selector.palette().obstacle_color,
                 self,
             )
         )
@@ -87,7 +94,7 @@ class BoidFrame:
             Line(
                 Vector2(1, self.height - 1),
                 Vector2(self.width - 1, self.height - 1),
-                self.color_palette.obstacle_color,
+                self.palette_selector.palette().obstacle_color,
                 self,
             )
         )
@@ -95,7 +102,7 @@ class BoidFrame:
             Line(
                 Vector2(self.width - 1, 1),
                 Vector2(self.width - 1, self.height - 1),
-                self.color_palette.obstacle_color,
+                self.palette_selector.palette().obstacle_color,
                 self,
             )
         )

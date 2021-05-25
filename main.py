@@ -8,7 +8,6 @@ from pygame.math import Vector2
 from boid import Boid
 from boidframe import BoidFrame
 from obstacle import Line
-from util.palettes import get_random_color_palette
 from util.input import *
 from messagedisplay import MessageDisplay
 
@@ -22,7 +21,6 @@ pygame.display.set_caption("    [boids]")
 pygame.init()
 
 frame = BoidFrame(width=width, height=height)
-color_palette = get_random_color_palette()
 message_display = MessageDisplay()
 
 # Create boids:
