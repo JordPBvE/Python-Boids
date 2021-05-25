@@ -7,7 +7,7 @@ from pygame.math import Vector2
 
 from boid import Boid
 from framemodes import FrameModes
-from obstacle import Line
+from obstacle import Line, Polygon
 from util.palettes import PaletteSelector
 
 
@@ -18,6 +18,7 @@ class BoidFrame:
         self.width = width
         self.height = height
         self.mode = FrameModes.MODE_DEFAULT
+        self.polygon_verteces = []
         self.boid_list = []
         self.obstacle_list = []
         self.obstacle_size = 50
@@ -48,6 +49,11 @@ class BoidFrame:
         drawables = self.boid_list + self.obstacle_list
         for drawable in drawables:
             drawable.draw(screen)
+
+        if self.mode == FrameModes.MODE_BUILD_POLYGON and len(self.polygon_verteces) > 1:
+            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces + [pygame.mouse.get_pos()], width = 1)
+        elif len(self.polygon_verteces) == 1:
+            pygame.draw.line(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces[0], pygame.mouse.get_pos())
 
         if self.mode == FrameModes.MODE_BUILD:
             pygame.draw.circle(
@@ -106,6 +112,17 @@ class BoidFrame:
                 self,
             )
         )
+    
+    def create_polygon(self):
+        self.obstacle_list.append(
+            Polygon(
+                color = self.palette_selector.palette().obstacle_color, 
+                frame = self, 
+                vertices = self.polygon_verteces, 
+                lines=[]
+            )
+        )
+        
 
     def debug_draw_neighbour_connections(self, surface):
         for boid in self.boid_list:
