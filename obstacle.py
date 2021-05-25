@@ -23,7 +23,7 @@ class Circle:
 
     def draw(self, surface):
         if self.visible:
-            pygame.draw.circle(surface, self.frame.palette_selector.palette().obstacle_color, self.pos, self.radius, width = 2)
+            pygame.draw.circle(surface, self.frame.palette_selector.palette().obstacle_color, self.pos, self.radius, width = 1)
 
 
 class Line:
@@ -49,7 +49,7 @@ class Line:
                 pos = circle_pos,
                 radius = self.circle_radius,
                 color = self.frame.palette_selector.palette().obstacle_color,
-                visible = True,
+                visible = False,
                 frame = self.frame,
                 strength = 0.3,
             )
