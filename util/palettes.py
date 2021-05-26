@@ -134,12 +134,13 @@ color_palette_summer = BoidFramePalette(
 color_palette_greyscale = BoidFramePalette(
     name="Greyscale",
     background_color=Color(10, 10, 10),
-    obstacle_color=Color(192,160,32),
+    obstacle_color=Color(200, 200, 200),
     boid_palette=[
+        Color(202,180,32),
         Color(170, 170, 170),
         Color(120, 120, 120),
         Color(80, 80, 80),
-        Color(40, 40, 40),
+        Color(50, 50, 50),
         Color(220, 220, 220),
     ],
 )
