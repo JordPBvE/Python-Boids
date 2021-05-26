@@ -68,12 +68,12 @@ class Boid:
         v2 = self.rule2()
         v3 = self.rule3()
         v4 = self.avoid_obstacles()
-        v5 = self.move_toward_mouse()
 
         if self.frame.mode == FrameModes.MODE_FOLLOW_MOUSE:
+            v5 = self.move_toward_mouse()
             self.velocity = self.velocity + (v1 + v2 + v3 + v4) * 2 + v5 * 5
         else:
-            self.velocity = self.velocity + v1 + v2 + v3 + v4 + v5
+            self.velocity = self.velocity + v1 + v2 + v3 + v4
 
         magnitude = self.velocity.length()
 
