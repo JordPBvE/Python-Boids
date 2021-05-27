@@ -61,13 +61,13 @@ class Line:
                 color = self.frame.palette_selector.palette().obstacle_color,
                 visible = False,
                 frame = self.frame,
-                strength = 0.3,
+                strength = 0.1,
             )
             self.circles.append(circle)
             circle_pos = self.begin_pos + i * step
 
     def draw(self, surface):
-        pygame.draw.line(surface, self.color, self.begin_pos, self.end_pos, width=2)
+        pygame.draw.line(surface, self.frame.palette_selector.palette().obstacle_color, self.begin_pos, self.end_pos, width=2)
         for circle in self.circles:
             circle.draw(surface)
 
