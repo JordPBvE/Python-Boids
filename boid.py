@@ -53,13 +53,24 @@ class Boid:
 
         # pygame.draw.circle(surface, self.color,self.pos, self.checkradius, width = 1)
 
-        pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
+        adaptive_color = self.adaptive_color()
+        pygame.draw.polygon(surface, adaptive_color, (head, foot_1, foot_2))
 
     def do_step(self, dt):
         self.change_velocity()
         self.pos = self.pos + dt * self.velocity
         self.pos.x = self.pos.x % self.frame.width
         self.pos.y = self.pos.y % self.frame.height
+
+    def adaptive_color(self):
+        inc = 2 * (len(self.neighbors) - 5)
+        r = self.color.r + inc
+        g = self.color.g + inc
+        b = self.color.b + inc
+        r = max(0, min(255, r))
+        g = max(0, min(255, g))
+        b = max(0, min(255, b))
+        return Color(r, g, b)
 
     def change_velocity(self):
         self.identify_neighbors()

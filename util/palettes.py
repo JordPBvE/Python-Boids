@@ -73,7 +73,7 @@ color_palette_neon = BoidFramePalette(
 color_palette_red_grey = BoidFramePalette(
     name="Red",
     background_color=Color(63, 0, 0),
-    obstacle_color=Color(30, 31, 45),
+    obstacle_color=Color(30, 31, 128),
     boid_palette=[
         Color(254, 34, 48),
         Color(154, 41, 48),
@@ -172,7 +172,7 @@ color_palette_durag_activity = BoidFramePalette(
 
 color_palette_monochrome = BoidFramePalette(
     name="Monochrome",
-    background_color=Color(0, 20, 0),
+    background_color=Color(0, 110, 0),
     obstacle_color=Color(0, 60, 0),
     boid_palette=[
         Color(0, 210, 40),

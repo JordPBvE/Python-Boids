@@ -51,17 +51,17 @@ class BoidFrame:
             drawable.draw(screen)
 
         if self.mode == FrameModes.MODE_BUILD_POLYGON and len(self.polygon_verteces) > 1:
-            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces + [pygame.mouse.get_pos()], width = 2)
+            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces + [pygame.mouse.get_pos()], width = 3)
         elif len(self.polygon_verteces) == 1:
-            pygame.draw.line(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces[0], pygame.mouse.get_pos())
+            pygame.draw.line(screen, self.palette_selector.palette().obstacle_color, self.polygon_verteces[0], pygame.mouse.get_pos(), width = 3)
 
         if self.mode == FrameModes.MODE_BUILD:
             pygame.draw.circle(
                 screen,
-                (255, 255, 255),
+                self.palette_selector.current_palette.obstacle_color,
                 pygame.mouse.get_pos(),
                 self.obstacle_size,
-                width=1,
+                width=3,
             )
 
     def update_colors(self):
