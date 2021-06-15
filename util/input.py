@@ -78,7 +78,8 @@ def process_key_event(event, boidFrame, message_display):
     elif boidFrame.mode == FrameModes.MODE_BUILD:
         handle_key_input_mode_build(event, boidFrame)
     elif boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
-        pass
+        handle_key_input_mode_build(event, boidFrame)
+
 
     if event.key == pygame.K_p:
         boidFrame.paused = not boidFrame.paused
