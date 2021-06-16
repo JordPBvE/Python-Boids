@@ -33,10 +33,11 @@ def handle_key_input_mode_default(event, boidFrame, message_display):
 def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]:  # LMB
-        boidFrame.polygon_verteces.append(mouse_pos)
+        boidFrame.polygon_vertices.append(mouse_pos)
     if buttons_pressed[2]:  # RMB
-        boidFrame.create_polygon()
-        boidFrame.polygon_verteces = []
+        if len(boidFrame.polygon_vertices) > 1:
+            boidFrame.create_polygon()
+            boidFrame.polygon_vertices = []
 
 def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
     # get the tuple of values for which mouse button was clicked
