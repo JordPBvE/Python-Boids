@@ -26,9 +26,13 @@ def main():
 
     # Create boids:
     boid_count = 40
+    # Leave a margin for the boids positions, so that they
+    # don't spawn on the edge of the screen
+    border_margin = 15
     for i in range(boid_count):
         random_pos = Vector2(
-            random.randint(10, width - 10), random.randint(10, height - 10)
+            random.randint(border_margin, width - border_margin),
+            random.randint(border_margin, height - border_margin),
         )
         random_velocity = Vector2(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
         frame.add_boid(
@@ -41,6 +45,7 @@ def main():
 
     should_run = True
     while should_run:
+        # The clock is used to keep track of the time between each frame
         dt = clock.tick(60)
         frame.do_step(dt, screen)
         message_display.render_message(screen)

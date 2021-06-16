@@ -218,7 +218,8 @@ class Boid:
                 if is_obstacle_in_front:
                     dist_to_obstacle = to_obstacle.length() - obstacle.radius
                     strength = math.sqrt(obstacle.radius) / dist_to_obstacle
-                    # If the distance after turing left is smaller, turn right (since we're trying to increase the distance) - and vice versa
+                    # If the angle to the obstacle is nonnegative, turn right,
+                    # otherwise turn left
                     if angle_with_obstacle >= 0:
                         cumulative_diverging_steering += (
                             strength * self.velocity.rotate(-90)
