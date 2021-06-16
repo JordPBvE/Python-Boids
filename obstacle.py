@@ -13,7 +13,7 @@ class Circle:
         visible=True,
         frame=None,
         strength=1,
-        permanent = False
+        permanent=False,
     ):
         self.frame = frame
         self.pos = pos
@@ -25,17 +25,16 @@ class Circle:
 
     def draw(self, surface):
         if self.visible:
-            pygame.draw.circle(surface, self.frame.palette_selector.palette().obstacle_color, self.pos, self.radius)
+            pygame.draw.circle(
+                surface,
+                self.frame.palette_selector.palette().obstacle_color,
+                self.pos,
+                self.radius,
+            )
 
 
 class Line:
-    def __init__(self, 
-        begin_pos, 
-        end_pos, 
-        color, 
-        frame, 
-        permanent = False
-        ):
+    def __init__(self, begin_pos, end_pos, color, frame, permanent=False):
 
         self.frame = frame
         self.begin_pos = begin_pos
@@ -45,7 +44,6 @@ class Line:
         self.length = (begin_pos - end_pos).length()
         self.circle_radius = 10
         self.permanent = permanent
-        
 
         self.populate()
 
@@ -56,36 +54,35 @@ class Line:
 
         for i in range(circle_count + 1):
             circle = Circle(
-                pos = circle_pos,
-                radius = self.circle_radius,
-                color = self.frame.palette_selector.palette().obstacle_color,
-                visible = False,
-                frame = self.frame,
-                strength = 0.1,
+                pos=circle_pos,
+                radius=self.circle_radius,
+                color=self.frame.palette_selector.palette().obstacle_color,
+                visible=False,
+                frame=self.frame,
+                strength=0.1,
             )
             self.circles.append(circle)
             circle_pos = self.begin_pos + i * step
 
     def draw(self, surface):
-        pygame.draw.line(surface, self.frame.palette_selector.palette().obstacle_color, self.begin_pos, self.end_pos, width=2)
+        pygame.draw.line(
+            surface,
+            self.frame.palette_selector.palette().obstacle_color,
+            self.begin_pos,
+            self.end_pos,
+            width=2,
+        )
         for circle in self.circles:
             circle.draw(surface)
 
 
 class Polygon:
-    def __init__(self, 
-        color, 
-        frame, 
-        vertices=[], 
-        lines=[],
-        permanent = False
-    ):
+    def __init__(self, color, frame, vertices=[], lines=[], permanent=False):
         self.color = color
         self.frame = frame
         self.vertices = vertices
         self.lines = lines
         self.permanent = permanent
-        
 
         self.create()
 
@@ -94,15 +91,25 @@ class Polygon:
             self.lines.append(
                 Line(
                     self.vertices[i],
-                    self.vertices[(i+1)%len(self.vertices)],
+                    self.vertices[(i + 1) % len(self.vertices)],
                     self.frame.palette_selector.palette().obstacle_color,
                     self.frame,
-                ))
+                )
+            )
 
     def draw(self, surface):
         for line in self.lines:
             line.draw(surface)
         if len(self.vertices) > 2:
-            pygame.draw.polygon(surface, self.frame.palette_selector.palette().obstacle_color, self.vertices)
+            pygame.draw.polygon(
+                surface,
+                self.frame.palette_selector.palette().obstacle_color,
+                self.vertices,
+            )
         elif len(self.vertices) == 2:
-            pygame.draw.line(surface, self.frame.palette_selector.palette().obstacle_color, self.vertices[0], self.vertices[1])
+            pygame.draw.line(
+                surface,
+                self.frame.palette_selector.palette().obstacle_color,
+                self.vertices[0],
+                self.vertices[1],
+            )

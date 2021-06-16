@@ -24,6 +24,7 @@ class BoidFrame:
         self.obstacle_size = 50
         self.palette_selector = PaletteSelector()
         self.paused = False
+        self.create_walls()
 
     def add_boid(self, boid):
         boid.color = random.choice(self.palette_selector.palette().boid_palette)
@@ -50,10 +51,24 @@ class BoidFrame:
         for drawable in drawables:
             drawable.draw(screen)
 
-        if self.mode == FrameModes.MODE_BUILD_POLYGON and len(self.polygon_vertices) > 1:
-            pygame.draw.polygon(screen, self.palette_selector.palette().obstacle_color, self.polygon_vertices + [pygame.mouse.get_pos()], width = 3)
+        if (
+            self.mode == FrameModes.MODE_BUILD_POLYGON
+            and len(self.polygon_vertices) > 1
+        ):
+            pygame.draw.polygon(
+                screen,
+                self.palette_selector.palette().obstacle_color,
+                self.polygon_vertices + [pygame.mouse.get_pos()],
+                width=3,
+            )
         elif len(self.polygon_vertices) == 1:
-            pygame.draw.line(screen, self.palette_selector.palette().obstacle_color, self.polygon_vertices[0], pygame.mouse.get_pos(), width = 3)
+            pygame.draw.line(
+                screen,
+                self.palette_selector.palette().obstacle_color,
+                self.polygon_vertices[0],
+                pygame.mouse.get_pos(),
+                width=3,
+            )
 
         if self.mode == FrameModes.MODE_BUILD:
             pygame.draw.circle(
@@ -86,7 +101,7 @@ class BoidFrame:
                 Vector2(1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
-                permanent = True
+                permanent=True,
             )
         )
         new_walls.append(
@@ -95,7 +110,7 @@ class BoidFrame:
                 Vector2(self.width - 1, 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
-                permanent = True
+                permanent=True,
             )
         )
         new_walls.append(
@@ -104,7 +119,7 @@ class BoidFrame:
                 Vector2(self.width - 1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
-                permanent = True
+                permanent=True,
             )
         )
         new_walls.append(
@@ -113,7 +128,7 @@ class BoidFrame:
                 Vector2(self.width - 1, self.height - 1),
                 self.palette_selector.palette().obstacle_color,
                 self,
-                permanent = True
+                permanent=True,
             )
         )
         if self.obstacle_list == []:
@@ -121,17 +136,16 @@ class BoidFrame:
         else:
             for i in range(len(new_walls)):
                 self.obstacle_list[i] = new_walls[i]
-    
+
     def create_polygon(self):
         self.obstacle_list.append(
             Polygon(
-                color = self.palette_selector.palette().obstacle_color, 
-                frame = self, 
-                vertices = self.polygon_vertices,
-                lines=[]
+                color=self.palette_selector.palette().obstacle_color,
+                frame=self,
+                vertices=self.polygon_vertices,
+                lines=[],
             )
         )
-        
 
     def debug_draw_neighbour_connections(self, surface):
         for boid in self.boid_list:

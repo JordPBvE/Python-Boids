@@ -86,12 +86,12 @@ class Boid:
         else:
             self.velocity = self.velocity + v1 + v2 + v3 + v4
 
-        magnitude = self.velocity.length()
-
-        if magnitude > self.max_speed:
-            self.velocity = self.velocity / (magnitude / self.max_speed)
-        if magnitude < self.min_speed:
-            self.velocity = self.velocity / (magnitude / self.min_speed)
+        # Cap boid speed:
+        speed = self.velocity.length()
+        if speed > self.max_speed:
+            self.velocity = self.velocity / (speed / self.max_speed)
+        if speed < self.min_speed:
+            self.velocity = self.velocity / (speed / self.min_speed)
 
     def identify_neighbors(self):
         self.neighbors = []
@@ -200,6 +200,7 @@ class Boid:
                 # d here is the distance from the midpoint of the obstacle to the
                 # line through the midpoint of the boid with the direction of its
                 # velocity vector
+                # TODO: remove lambda (it's only used once, so why is it here?)
                 d = lambda vvx, vvy: abs(
                     (vvy / vvx) * mx - my + (py - (vvy / vvx) * px)
                 ) / (math.sqrt(1 + (vvy / vvx) ** 2))
@@ -215,7 +216,7 @@ class Boid:
                 )
 
                 if is_obstacle_in_front:
-                    dist_to_obstacle = (to_obstacle).length() - obstacle.radius
+                    dist_to_obstacle = to_obstacle.length() - obstacle.radius
                     strength = math.sqrt(obstacle.radius) / dist_to_obstacle
                     # If the distance after turing left is smaller, turn right (since we're trying to increase the distance) - and vice versa
                     if angle_with_obstacle >= 0:
@@ -226,7 +227,6 @@ class Boid:
                         cumulative_diverging_steering += (
                             strength * self.velocity.rotate(90)
                         )
-            # cumulative_diverging_steering *= 2
 
         return (
             factor_direct * cumulative_diverging_direct
@@ -234,22 +234,26 @@ class Boid:
         )
 
     def move_toward_mouse(self):
-        if self.frame.mode == FrameModes.MODE_FOLLOW_MOUSE:
-            mouse_pos = Vector2()
-            mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
-            margin = 0.15
-            mouse_pos.x = max(
-                margin * self.frame.width,
-                min(mouse_pos.x, self.frame.width * (1 - margin)),
-            )
-            mouse_pos.y = max(
-                margin * self.frame.height,
-                min(mouse_pos.y, self.frame.height * (1 - margin)),
-            )
-            diff = (mouse_pos - self.pos).normalize()
-            return 0.005 * diff
-        else:
-            return Vector2(0, 0)
+        """Calculate the velocity component that moves boids towards the mouse cursor."""
+        mouse_pos = Vector2()
+        mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
+        margin = 0.15
+        # Cap the mouse position to prevent boids from
+        # flying off screen when following the mouse
+        mouse_pos.x = max(
+            margin * self.frame.width,
+            min(mouse_pos.x, self.frame.width * (1 - margin)),
+        )
+        mouse_pos.y = max(
+            margin * self.frame.height,
+            min(mouse_pos.y, self.frame.height * (1 - margin)),
+        )
+        # Calculate difference and normalize (so that the)
+        # distance to the mouse doesn't affect the strength
+        # of the mouse pull
+        diff = (mouse_pos - self.pos).normalize()
+        return 0.005 * diff
+
 
     def avoid_walls(self):
         return Vector2(0, 0)
