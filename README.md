@@ -1,8 +1,10 @@
-# Boids-Python-Project
+# Python Boids
+
+![Boids image](resources/boids.png)
 
 ## A python3 implementation of Boids. 
 
-Boids (short for bird-oid) is the name for a specific type of simulation that attempts to flocking behavior. This is a python3 implementation of that simulation (with some added controls).
+Boids (short for bird-oid) is the name for a specific type of simulation that represents flocking behavior commonly seen in animals such as fish and birds (hence the name). This is a python3 implementation of that simulation (with some added controls).
 
 ## Controls:
 
