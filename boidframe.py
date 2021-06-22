@@ -44,7 +44,7 @@ class BoidFrame:
 
         if self.mode == FrameModes.MODE_DEBUG:
             # self.debug_print_collisions()
-            self.debug_draw_neighbour_connections(screen)
+            self.debug_draw_neighbor_connections(screen)
             self.debug_draw_obstacle_connections(screen)
 
         drawables = self.boid_list + self.obstacle_list
@@ -147,16 +147,16 @@ class BoidFrame:
             )
         )
 
-    def debug_draw_neighbour_connections(self, surface):
+    def debug_draw_neighbor_connections(self, surface):
         for boid in self.boid_list:
-            for neighbour in boid.neighbors:
-                diff = boid.pos - neighbour.pos
-                if diff.length() < boid.checkradius:
+            for neighbor in boid.neighbors:
+                diff = boid.pos - neighbor.pos
+                if diff.length() < boid.neighbor_radius:
                     pygame.draw.line(
                         surface,
                         pygame.Color(100, 100, 100),
                         boid.pos,
-                        neighbour.pos,
+                        neighbor.pos,
                         width=1,
                     )
 
@@ -164,7 +164,7 @@ class BoidFrame:
         for boid in self.boid_list:
             for obstacle in boid.near_obstacles:
                 diff = boid.pos - obstacle.pos
-                if diff.length() < boid.checkradius + obstacle.radius:
+                if diff.length() < boid.neighbor_radius + obstacle.radius:
                     pygame.draw.line(
                         surface,
                         pygame.Color(200, 100, 100),

@@ -10,6 +10,18 @@ from framemodes import FrameModes
 
 
 class Boid:
+    """Boid object
+
+    Class instance attributes:
+    frame: BoidFrame -- the BoidFrame object within which the boid is contained
+    pos: Vector2(int, int) -- the (2d) position vector of the boid
+    size: int -- the size (from the center to the "head", in pixels) of the boid
+    velocity: Vector2(float, float) -- the (2d) velocity vector of the boid
+    max_speed: float -- maximum boid speed (i.e. maximum velocity vector length)
+    min_speed: float -- minimum boid speed (i.e. minimum velocity vector length)
+    color: Color(int, int, int) -- the RGB color of the boid
+    """
+
     def __init__(
         self,
         frame=None,
@@ -20,21 +32,24 @@ class Boid:
         min_speed=0.15,
         color=Color(255, 255, 255),
     ):
-
         self.frame = frame
-        self.neighbors = []
-        self.near_obstacles = []
-        self.checkradius = 150
-        self.obstacle_radius = 2 * self.checkradius
         self.pos = pos
         self.size = size
         self.velocity = velocity
         self.max_speed = max_speed
         self.min_speed = min_speed
         self.color = color
+        self.neighbor_radius = 150
+        self.obstacle_radius = 2 * self.neighbor_radius
+        self.neighbors = []
+        self.near_obstacles = []
 
     def draw(self, surface):
-        # draw boid with pygame
+        """Draw the boid to the given surface using pygame.
+
+        Arguments:
+        surface -- the surface that the boid should be rendered to
+        """
         s = (
             self.size * self.velocity.normalize()
         )  # use the normalized velocity vector to draw the head
@@ -51,18 +66,23 @@ class Boid:
         s_left.x, s_left.y = -s_left.y, s_left.x
         foot_2 = self.pos - s + 0.5 * s_left
 
-        # pygame.draw.circle(surface, self.color,self.pos, self.checkradius, width = 1)
-
         adaptive_color = self.adaptive_color()
         pygame.draw.polygon(surface, adaptive_color, (head, foot_1, foot_2))
 
     def do_step(self, dt):
+        """Do a step for the next frame, calculating velocity and moving.
+
+        Arguments:
+        dt -- the time passed since the last frame was rendered
+        """
         self.change_velocity()
         self.pos = self.pos + dt * self.velocity
+        # Teleport boid to opposite end of the screen when it goes off-screen.
         self.pos.x = self.pos.x % self.frame.width
         self.pos.y = self.pos.y % self.frame.height
 
     def adaptive_color(self):
+        """Color boid based on the amount of neighbours."""
         inc = 2 * (len(self.neighbors) - 5)
         r = self.color.r + inc
         g = self.color.g + inc
@@ -73,34 +93,43 @@ class Boid:
         return Color(r, g, b)
 
     def change_velocity(self):
+        """Change the velocity based on the 'boid algorithm'."""
+        
+        # It's necessary to identify neighbors and obstacles for the 
+        # calculations 
         self.identify_neighbors()
+        self.identify_obstacles()
 
-        v1 = self.rule1()
-        v2 = self.rule2()
-        v3 = self.rule3()
-        v4 = self.avoid_obstacles()
+        v_coh = self.get_cohesion_component()
+        v_sep = self.get_separation_component()
+        v_alg = self.get_alignment_component()
+        v_avd = self.get_obstacle_avoidance_component()
 
+        v_res = v_coh + v_sep + v_alg + v_avd
         if self.frame.mode == FrameModes.MODE_FOLLOW_MOUSE:
-            v5 = self.move_toward_mouse()
-            self.velocity = self.velocity + (v1 + v2 + v3 + v4) * 2 + v5 * 5
+            v_mou = self.get_mouse_component()
+            self.velocity = self.velocity + v_res * 2 + v_mou * 5
         else:
-            self.velocity = self.velocity + v1 + v2 + v3 + v4
+            self.velocity = self.velocity + v_res
 
-        # Cap boid speed:
+        # Cap speed:
         speed = self.velocity.length()
         if speed > self.max_speed:
-            self.velocity = self.velocity / (speed / self.max_speed)
+            self.velocity = self.velocity.normalize() * self.max_speed
         if speed < self.min_speed:
-            self.velocity = self.velocity / (speed / self.min_speed)
+            self.velocity = self.velocity.normalize() * self.min_speed
 
     def identify_neighbors(self):
+        """Find all the boid's neighbors."""
         self.neighbors = []
         for boid in self.frame.boid_list:
             diff = self.pos - boid.pos
 
-            if diff.length() < self.checkradius:
+            if diff.length() < self.neighbor_radius:
                 self.neighbors.append(boid)
 
+    def identify_obstacles(self):
+        """Find obstacles within the boid's obstacle radius."""
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
             if isinstance(obstacle, Polygon):
@@ -120,13 +149,13 @@ class Boid:
                 if diff.length() - obstacle.radius < self.obstacle_radius:
                     self.near_obstacles.append(obstacle)
 
-    def rule1(self):
-        # Move towards the center of all boids
+    def get_cohesion_component(self):
+        """Get velocity component that points to the center of all boids."""
         com = Vector2(0, 0)
-        neigborcount = len(self.neighbors)
+        neigbor_count = len(self.neighbors)
 
         for boid in self.neighbors:
-            com += boid.pos / neigborcount
+            com += boid.pos / neigbor_count
 
         # difference vector between boid position and center of mass
         diff = (com - self.pos) / 6000
@@ -134,8 +163,8 @@ class Boid:
         # return Vector2(0,0)
         return diff
 
-    def rule2(self):
-        # Move away from neighbouring boids that are just a bit too close
+    def get_separation_component(self):
+        """ Get velocity component that separates boids that are too close."""
         cumulative_diverging_vector = Vector2(0, 0)
 
         for boid in self.neighbors:
@@ -151,11 +180,10 @@ class Boid:
         cumulative_diverging_vector += self.velocity / 2
         cumulative_diverging_vector /= 80
 
-        # return Vector2(0,0)
         return cumulative_diverging_vector
 
-    def rule3(self):
-        # Allign with neighboring boids
+    def get_alignment_component(self):
+        """Get velocity component that aligns boid velocity with neighbors."""
         total_vector = Vector2(0, 0)
 
         for boid in self.neighbors:
@@ -166,13 +194,16 @@ class Boid:
 
         return velocity_correction
 
-    def avoid_obstacles(self):
-        # this factor (should be 0 <= factor <= 1) determines the distribution
-        # between direct avoidance (moving directly away), and steering avoidance
-        # (steering around obstacles)
-        factor_direct = 0.6
+    def get_obstacle_avoidance_component(self, factor_direct=0.6):
+        """Get velocity component that steers the boid around obstacles.
 
-        # calculate direct avoidance vector (moving directly away from obstacles)
+        Arguments:
+        factor_direct: int -- a value between 0 and 1 that determines the
+        distribution between direct avoidance (moving directly away) and
+        steering avoidance steering around obstacles. A value of 1 results in
+        direct avoidance exclusively, 0 results in just steering avoidance.
+        """
+        # calculate direct avoidance vector (directly away from obstacles)
         cumulative_diverging_direct = Vector2(0, 0)
         if factor_direct > 0:
             for obstacle in self.near_obstacles:
@@ -234,11 +265,10 @@ class Boid:
             + (1 - factor_direct) * cumulative_diverging_steering
         )
 
-    def move_toward_mouse(self):
-        """Calculate the velocity component that moves boids towards the mouse cursor."""
+    def get_mouse_component(self, margin=0.15):
+        """Calculate the velocity component that moves toward mouse cursor."""
         mouse_pos = Vector2()
         mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
-        margin = 0.15
         # Cap the mouse position to prevent boids from
         # flying off screen when following the mouse
         mouse_pos.x = max(
@@ -254,7 +284,3 @@ class Boid:
         # of the mouse pull
         diff = (mouse_pos - self.pos).normalize()
         return 0.005 * diff
-
-
-    def avoid_walls(self):
-        return Vector2(0, 0)
