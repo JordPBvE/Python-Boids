@@ -40,18 +40,22 @@ class BoidFrame:
         self.create_walls()
 
     def add_boid(self, boid):
-        """"""
+        """Add a boid to the frame."""
         boid.color = random.choice(self.palette_selector.palette().boid_palette)
         self.boid_list.append(boid)
         boid.frame = self
 
     def add_obstacle(self, obstacle):
-        """"""
+        """Add an obstacle to the frame"""
         self.obstacle_list.append(obstacle)
         obstacle.frame = self
 
     def do_step(self, dt, screen):
-        """"""
+        """Do a step for the next frame.
+
+        Arguments:
+        dt -- the time passed since the last frame was rendered
+        """
         screen.fill(self.palette_selector.palette().background_color)
 
         if not self.paused:
@@ -59,15 +63,15 @@ class BoidFrame:
                 b.do_step(dt)
 
         if self.mode == FrameModes.MODE_DEBUG:
-            # self.debug_print_collisions()
-            self.debug_draw_neighbor_connections(screen)
             self.debug_draw_obstacle_connections(screen)
+            self.debug_draw_neighbor_connections(screen)
 
         drawables = self.boid_list + self.obstacle_list
         for drawable in drawables:
             drawable.draw(screen)
 
         if self.mode == FrameModes.MODE_BUILD_POLYGON:
+            # Draw the polygon obstacle that's being built
             if len(self.polygon_vertices) > 1:
                 pygame.draw.polygon(
                     screen,
@@ -83,8 +87,8 @@ class BoidFrame:
                     pygame.mouse.get_pos(),
                     width=3,
                 )
-
-        if self.mode == FrameModes.MODE_BUILD:
+        elif self.mode == FrameModes.MODE_BUILD:
+            # Draw the circle obstacle that's being built
             pygame.draw.circle(
                 screen,
                 self.palette_selector.current_palette.obstacle_color,
@@ -94,24 +98,24 @@ class BoidFrame:
             )
 
     def update_colors(self):
-        """"""
+        """Update colors of all objects to the appropriate palette color."""
         for obstacle in self.obstacle_list:
             obstacle.color = self.palette_selector.palette().obstacle_color
         for boid in self.boid_list:
             boid.color = random.choice(self.palette_selector.palette().boid_palette)
 
     def next_palette(self):
-        """"""
+        """Change the palette to the next."""
         self.palette_selector.nxt()
         self.update_colors()
 
     def prev_palette(self):
-        """"""
+        """Change the palette to the previous."""
         self.palette_selector.prv()
         self.update_colors()
 
     def create_walls(self):
-        """"""
+        """Create walls around the borders of the frame/window."""
         new_walls = []
         new_walls.append(
             Line(
@@ -156,7 +160,7 @@ class BoidFrame:
                 self.obstacle_list[i] = new_walls[i]
 
     def create_polygon(self):
-        """"""
+        """Create polygon from stored vertices."""
         self.obstacle_list.append(
             Polygon(
                 color=self.palette_selector.palette().obstacle_color,
@@ -167,7 +171,7 @@ class BoidFrame:
         )
 
     def debug_draw_neighbor_connections(self, surface):
-        """"""
+        """Debug: draw the connections between neighboring boids as lines."""
         for boid in self.boid_list:
             for neighbor in boid.neighbors:
                 diff = boid.pos - neighbor.pos
@@ -181,7 +185,7 @@ class BoidFrame:
                     )
 
     def debug_draw_obstacle_connections(self, surface):
-        """"""
+        """Debug: draw the connections between boids and obstacles as lines."""
         for boid in self.boid_list:
             for obstacle in boid.near_obstacles:
                 diff = boid.pos - obstacle.pos
@@ -193,16 +197,3 @@ class BoidFrame:
                         obstacle.pos,
                         width=2,
                     )
-
-    def debug_print_collisions(self):
-        """"""
-        # TODO: fix this, currently broken
-        for obstacle in self.obstacle_list:
-            collisions = 0
-            for boid in self.boid_list:
-                if (obstacle.pos - boid.pos).length() < obstacle.radius:
-                    collisions += 1
-            if collisions > 0:
-                print(
-                    f"{datetime.now()} | obstacle at pos {(obstacle.pos.x, obstacle.pos.y)} has {collisions} collisions. )"
-                )

@@ -66,7 +66,6 @@ class Boid:
         s_left.x, s_left.y = -s_left.y, s_left.x
         foot_2 = self.pos - s + 0.5 * s_left
 
-        # self.color = self.adaptive_color()
         pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
 
     def do_step(self, dt):
@@ -80,17 +79,6 @@ class Boid:
         # Teleport boid to opposite end of the screen when it goes off-screen.
         self.pos.x = self.pos.x % self.frame.width
         self.pos.y = self.pos.y % self.frame.height
-
-    def adaptive_color(self):
-        """Color boid based on the amount of neighbours."""
-        inc = 2 * (len(self.neighbors) - 5)
-        r = self.color.r + inc
-        g = self.color.g + inc
-        b = self.color.b + inc
-        r = max(0, min(255, r))
-        g = max(0, min(255, g))
-        b = max(0, min(255, b))
-        return Color(r, g, b)
 
     def change_velocity(self):
         """Change the velocity based on the 'boid algorithm'."""
