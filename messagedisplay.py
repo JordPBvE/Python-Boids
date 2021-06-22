@@ -15,8 +15,7 @@ class MessageDisplay:
     message: str -- the message that should be displayed
     dispatch_start: default_timer -- a timer that keeps track of when a message
     started displaying
-    show: bool -- flag that is True when the message should be displayed and
-    False when it shouldn't
+    show: bool -- whether the message should be displayed
     """
 
     def __init__(
@@ -29,7 +28,7 @@ class MessageDisplay:
         self.font_size = font_size
         self.font_color = font_color
         self.font = (
-            font if font != None else pygame.freetype.SysFont("Arial", self.font_size)
+            font if font != None else pygame.freetype.SysFont("Arial", font_size)
         )
         self.message_height = message_height
         self.message = ""

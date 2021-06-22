@@ -19,7 +19,7 @@ class Boid:
     velocity: Vector2(float, float) -- the (2d) velocity vector of the boid
     max_speed: float -- maximum boid speed (i.e. maximum velocity vector length)
     min_speed: float -- minimum boid speed (i.e. minimum velocity vector length)
-    color: Color(int, int, int) -- the RGB color of the boid
+    color: Color -- the RGB color of the boid
     """
 
     def __init__(
@@ -74,20 +74,19 @@ class Boid:
         Arguments:
         dt -- the time passed since the last frame was rendered
         """
+        # It's necessary to identify neighbors and obstacles for the
+        # calculations
+        self.identify_neighbors()
+        self.identify_obstacles()
+        # Update boid velocity and position
         self.change_velocity()
         self.pos = self.pos + dt * self.velocity
-        # Teleport boid to opposite end of the screen when it goes off-screen.
+        # Teleport boid to opposite end of the screen if it goes off-screen.
         self.pos.x = self.pos.x % self.frame.width
         self.pos.y = self.pos.y % self.frame.height
 
     def change_velocity(self):
         """Change the velocity based on the 'boid algorithm'."""
-        
-        # It's necessary to identify neighbors and obstacles for the 
-        # calculations 
-        self.identify_neighbors()
-        self.identify_obstacles()
-
         v_coh = self.get_cohesion_component()
         v_sep = self.get_separation_component()
         v_alg = self.get_alignment_component()
@@ -151,7 +150,7 @@ class Boid:
         return diff
 
     def get_separation_component(self):
-        """ Get velocity component that separates boids that are too close."""
+        """Get velocity component that separates boids that are too close."""
         cumulative_diverging_vector = Vector2(0, 0)
 
         for boid in self.neighbors:
@@ -208,21 +207,19 @@ class Boid:
         cumulative_diverging_steering = Vector2(0, 0)
         if factor_direct < 1:
             for obstacle in self.near_obstacles:
-                # "rename" variables to shorten the equation for d below
+                # "rename" variables to shorten the equation for 
+                # `dist_vector_line_to_obstacle` below
                 px = self.pos.x
                 py = self.pos.y
-                mx = obstacle.pos.x
-                my = obstacle.pos.y
-                vx = self.velocity.x
-                vy = self.velocity.y
-                # d here is the distance from the midpoint of the obstacle to 
-                # the line through the midpoint of the boid with the direction 
-                # of its velocity vector
-                # TODO: remove lambda (it's only used once, so why is it here?)
-                d = lambda vvx, vvy: abs(
-                    (vvy / vvx) * mx - my + (py - (vvy / vvx) * px)
-                ) / (math.sqrt(1 + (vvy / vvx) ** 2))
-                dist_vector_line_to_obstacle = d(vx, vy)
+                ox = obstacle.pos.x
+                oy = obstacle.pos.y
+                q = self.velocity.y/self.velocity.x
+                # d here is the distance from the midpoint of the obstacle to
+                # the line through the midpoint and head of the boid
+                dist_vector_line_to_obstacle = (
+                    abs((q) * ox - oy + (py - (q) * px))
+                    / (math.sqrt(1 + (q) ** 2))
+                )
 
                 to_obstacle = obstacle.pos - self.pos
                 angle_with_obstacle = self.velocity.angle_to(to_obstacle)
@@ -253,7 +250,7 @@ class Boid:
 
     def get_mouse_component(self, margin=0.15):
         """Calculate the velocity component that moves toward mouse cursor.
-        
+
         Keyword arguments:
         margin: float -- the factor of screen space that should be considered
         margin, that is: space that the mouse cannot enter

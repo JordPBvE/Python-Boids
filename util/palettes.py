@@ -3,16 +3,9 @@ import random
 from pygame import Color
 
 
-@dataclass
-class BoidFramePalette:
-    name: str
-    background_color: Color
-    obstacle_color: Color
-    boid_palette: list
-
-
 class PaletteSelector:
-    # Class to abstract away the selection of a palette
+    """Class to abstract away the selection of a palette."""
+
     def __init__(self):
         self.current_palette_index = 0
         self.current_palette = all_palettes[0]
@@ -32,6 +25,23 @@ class PaletteSelector:
 
     def palette(self):
         return self.current_palette
+
+
+@dataclass
+class BoidFramePalette:
+    """Dataclass that can be used to represent a certain palette.
+
+    Class attributes:
+    name: str -- the name of the palette
+    background_color: Color -- the color of the frame background
+    obstacle_color: Color -- the color of the obstacles
+    boid_palette: list[Color] -- the list of colors available to boids
+    """
+
+    name: str
+    background_color: Color
+    obstacle_color: Color
+    boid_palette: list
 
 
 color_palette_clown = BoidFramePalette(
@@ -136,7 +146,7 @@ color_palette_greyscale = BoidFramePalette(
     background_color=Color(10, 10, 10),
     obstacle_color=Color(200, 200, 200),
     boid_palette=[
-        Color(202,180,32),
+        Color(202, 180, 32),
         Color(170, 170, 170),
         Color(120, 120, 120),
         Color(80, 80, 80),

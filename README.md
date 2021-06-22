@@ -9,9 +9,11 @@ Boids (short for bird-oid) is the name for a specific type of simulation that at
 - `p`: pause / resume boids (stops boid movement)
 - `LEFT/RIGHT (arrow)`: Change color palette
 - `b`: activate build mode (allows one to place obstacles)
-  - `SPACE`: switch between build modes ("default" <> "polygon")
+  - `SPACE`: switch between build modes ("default" <=> "polygon")
   - `LMB`: build circle obstacle (while in "default" build mode) / place polygon vertex (while in "polygon" build mode)
   - `RMB`: finish polygon (while in "polygon" build mode)
+  - `R`: reset (remove) all built obstacles
+  - `BACKSPACE`: remove most recently built obstacle
 - `m`: activate mouse-following mode
 - `d`: enable debug mode
 - `ESC` / `q`: return to default mode.

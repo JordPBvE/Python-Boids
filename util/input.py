@@ -8,32 +8,19 @@ from framemodes import FrameModes
 
 
 def process_mouse_event(event, boidFrame, message_display):
+    """"""
     mouse_pos = Vector2()
     mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
 
-    if boidFrame.mode == FrameModes.MODE_DEFAULT:
-        handle_mouse_input_mode_default(event, boidFrame)
-    elif boidFrame.mode == FrameModes.MODE_DEBUG:
-        pass
-    elif boidFrame.mode == FrameModes.MODE_BUILD:
+    if boidFrame.mode == FrameModes.MODE_BUILD:
         handle_mouse_input_mode_build(event, boidFrame, mouse_pos)
     elif boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
         handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos)
 
 
-def handle_mouse_input_mode_default(event, boidFrame):
-    pass
-
-
-def handle_key_input_mode_default(event, boidFrame, message_display):
-    if event.key == pygame.K_m:
-        boidFrame.mode = FrameModes.MODE_FOLLOW_MOUSE
-        message_display.show_message(
-            "Mouse following mode activated. Boids will now follow the mouse."
-        )
-
-
 def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
+    # get the tuple of values for which mouse button (left, middle, right) was 
+    # clicked, e.g. (False, False, True) when RMB was pressed
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]:  # LMB
         boidFrame.polygon_vertices.append(mouse_pos)
@@ -44,8 +31,8 @@ def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
 
 
 def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
-    # get the tuple of values for which mouse button was clicked
-    # e.g. (True, False, False) when only LMB was pressed
+    # get the tuple of values for which mouse button (left, middle, right) was 
+    # clicked, e.g. (True, False, False) when LMB was pressed
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]:  # LMB
         new_circle = Circle(
@@ -66,23 +53,22 @@ def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
 
 
 def handle_key_input_mode_build(event, boidFrame):
+    """"""
     if event.key == pygame.K_r:
         boidFrame.obstacle_list = []
         boidFrame.create_walls()
-
+    elif event.key == pygame.K_BACKSPACE:
+        if not boidFrame.obstacle_list[-1].permanent:
+            boidFrame.obstacle_list.pop()
 
 def process_key_event(event, boidFrame, message_display):
-    if boidFrame.mode == FrameModes.MODE_DEFAULT:
-        handle_key_input_mode_default(event, boidFrame, message_display)
-    elif boidFrame.mode == FrameModes.MODE_FOLLOW_MOUSE:
-        pass
-    elif boidFrame.mode == FrameModes.MODE_DEBUG:
-        pass
-    elif boidFrame.mode == FrameModes.MODE_BUILD:
+    """Process a keypress."""
+    if boidFrame.mode == FrameModes.MODE_BUILD:
         handle_key_input_mode_build(event, boidFrame)
     elif boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
         handle_key_input_mode_build(event, boidFrame)
 
+    # Lots of keyboard controls defined below (that work across all modes):
     if event.key == pygame.K_p:
         boidFrame.paused = not boidFrame.paused
         msg = "Paused." if boidFrame.paused else "Resumed."
@@ -106,20 +92,26 @@ def process_key_event(event, boidFrame, message_display):
             "Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.",
             4,
         )
+    elif event.key == pygame.K_m:
+        boidFrame.mode = FrameModes.MODE_FOLLOW_MOUSE
+        message_display.show_message(
+            "Mouse following mode activated. Boids will now follow the mouse."
+        )
     elif event.key in (pygame.K_q, pygame.K_ESCAPE):
         boidFrame.mode = FrameModes.MODE_DEFAULT
         boidFrame.polygon_vertices = []
         message_display.show_message("Now in default mode.", 2)
-    elif event.key == pygame.K_BACKSPACE:
-        if not boidFrame.obstacle_list[-1].permanent:
-            boidFrame.obstacle_list.pop()
     if event.key == pygame.K_SPACE:
         if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
+            boidFrame.polygon_vertices = []
             boidFrame.mode = FrameModes.MODE_BUILD
             message_display.show_message("You can now place circular obstacles")
         elif boidFrame.mode == FrameModes.MODE_BUILD:
             boidFrame.mode = FrameModes.MODE_BUILD_POLYGON
             message_display.show_message("You can now place Polygons")
+        else:
+            message_display.show_message("[ b o i d s ]")
+
 
 
 def process_resize_event(event, screen, boidFrame):

@@ -23,12 +23,13 @@ def main():
 
     frame = BoidFrame(width=width, height=height)
     message_display = MessageDisplay()
+    message_display.show_message("[ b o i d s ]")
 
     # Create boids:
     boid_count = 40
     # Leave a margin for the boids positions, so that they
     # don't spawn on the edge of the screen
-    border_margin = 15
+    border_margin = 20
     for i in range(boid_count):
         random_pos = Vector2(
             random.randint(border_margin, width - border_margin),
@@ -49,6 +50,7 @@ def main():
         dt = clock.tick(60)
         frame.do_step(dt, screen)
         message_display.render_message(screen)
+        # Handle events (such as input)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 should_run = False
