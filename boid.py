@@ -66,8 +66,8 @@ class Boid:
         s_left.x, s_left.y = -s_left.y, s_left.x
         foot_2 = self.pos - s + 0.5 * s_left
 
-        adaptive_color = self.adaptive_color()
-        pygame.draw.polygon(surface, adaptive_color, (head, foot_1, foot_2))
+        # self.color = self.adaptive_color()
+        pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
 
     def do_step(self, dt):
         """Do a step for the next frame, calculating velocity and moving.
@@ -160,7 +160,6 @@ class Boid:
         # difference vector between boid position and center of mass
         diff = (com - self.pos) / 6000
 
-        # return Vector2(0,0)
         return diff
 
     def get_separation_component(self):
@@ -228,9 +227,9 @@ class Boid:
                 my = obstacle.pos.y
                 vx = self.velocity.x
                 vy = self.velocity.y
-                # d here is the distance from the midpoint of the obstacle to the
-                # line through the midpoint of the boid with the direction of its
-                # velocity vector
+                # d here is the distance from the midpoint of the obstacle to 
+                # the line through the midpoint of the boid with the direction 
+                # of its velocity vector
                 # TODO: remove lambda (it's only used once, so why is it here?)
                 d = lambda vvx, vvy: abs(
                     (vvy / vvx) * mx - my + (py - (vvy / vvx) * px)
@@ -259,14 +258,18 @@ class Boid:
                         cumulative_diverging_steering += (
                             strength * self.velocity.rotate(90)
                         )
-
         return (
             factor_direct * cumulative_diverging_direct
             + (1 - factor_direct) * cumulative_diverging_steering
         )
 
     def get_mouse_component(self, margin=0.15):
-        """Calculate the velocity component that moves toward mouse cursor."""
+        """Calculate the velocity component that moves toward mouse cursor.
+        
+        Keyword arguments:
+        margin: float -- the factor of screen space that should be considered
+        margin, that is: space that the mouse cannot enter
+        """
         mouse_pos = Vector2()
         mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
         # Cap the mouse position to prevent boids from

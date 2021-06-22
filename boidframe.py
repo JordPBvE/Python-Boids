@@ -12,30 +12,46 @@ from util.palettes import PaletteSelector
 
 
 class BoidFrame:
-    # A class containing all information about the scene:
-    # boids, obstacles, colors, etc.
+    """Class containing all information about the scene that is rendered.
+    
+    Class attributes:
+    width: int -- the width of the frame (matching window resolution)
+    height: int -- the height of the frame (matching window resolution)
+    mode: int -- the mode that the application is in (default, build, etc.)
+    boid_list: list[Boid] -- a list containing all boids
+    palette_selector: PaletteSelector -- the palette selector that helps with
+    changes of palettes
+    paused: bool -- a flag indicating whether boid movement is paused or not
+    obstacle_size: int -- the size of obstacles in pixels
+    obstacle_list: list[Obstacle] -- a list containing all obstacles
+    polygon_vertices: list[Vector2(int, int)] -- list of vertices that make up
+    the polygon that is currently being built (when in polygon build mode)
+    """
     def __init__(self, width=256, height=256):
         self.width = width
         self.height = height
         self.mode = FrameModes.MODE_DEFAULT
-        self.polygon_vertices = []
         self.boid_list = []
-        self.obstacle_list = []
-        self.obstacle_size = 50
         self.palette_selector = PaletteSelector()
         self.paused = False
+        self.obstacle_size = 50
+        self.obstacle_list = []
+        self.polygon_vertices = []
         self.create_walls()
 
     def add_boid(self, boid):
+        """"""
         boid.color = random.choice(self.palette_selector.palette().boid_palette)
         self.boid_list.append(boid)
         boid.frame = self
 
     def add_obstacle(self, obstacle):
+        """"""
         self.obstacle_list.append(obstacle)
         obstacle.frame = self
 
     def do_step(self, dt, screen):
+        """"""
         screen.fill(self.palette_selector.palette().background_color)
 
         if not self.paused:
@@ -51,24 +67,22 @@ class BoidFrame:
         for drawable in drawables:
             drawable.draw(screen)
 
-        if (
-            self.mode == FrameModes.MODE_BUILD_POLYGON
-            and len(self.polygon_vertices) > 1
-        ):
-            pygame.draw.polygon(
-                screen,
-                self.palette_selector.palette().obstacle_color,
-                self.polygon_vertices + [pygame.mouse.get_pos()],
-                width=3,
-            )
-        elif len(self.polygon_vertices) == 1:
-            pygame.draw.line(
-                screen,
-                self.palette_selector.palette().obstacle_color,
-                self.polygon_vertices[0],
-                pygame.mouse.get_pos(),
-                width=3,
-            )
+        if self.mode == FrameModes.MODE_BUILD_POLYGON:
+            if len(self.polygon_vertices) > 1:
+                pygame.draw.polygon(
+                    screen,
+                    self.palette_selector.palette().obstacle_color,
+                    self.polygon_vertices + [pygame.mouse.get_pos()],
+                    width=3,
+                )
+            elif len(self.polygon_vertices) == 1:
+                pygame.draw.line(
+                    screen,
+                    self.palette_selector.palette().obstacle_color,
+                    self.polygon_vertices[0],
+                    pygame.mouse.get_pos(),
+                    width=3,
+                )
 
         if self.mode == FrameModes.MODE_BUILD:
             pygame.draw.circle(
@@ -80,20 +94,24 @@ class BoidFrame:
             )
 
     def update_colors(self):
+        """"""
         for obstacle in self.obstacle_list:
             obstacle.color = self.palette_selector.palette().obstacle_color
         for boid in self.boid_list:
             boid.color = random.choice(self.palette_selector.palette().boid_palette)
 
     def next_palette(self):
+        """"""
         self.palette_selector.nxt()
         self.update_colors()
 
     def prev_palette(self):
+        """"""
         self.palette_selector.prv()
         self.update_colors()
 
     def create_walls(self):
+        """"""
         new_walls = []
         new_walls.append(
             Line(
@@ -138,6 +156,7 @@ class BoidFrame:
                 self.obstacle_list[i] = new_walls[i]
 
     def create_polygon(self):
+        """"""
         self.obstacle_list.append(
             Polygon(
                 color=self.palette_selector.palette().obstacle_color,
@@ -148,6 +167,7 @@ class BoidFrame:
         )
 
     def debug_draw_neighbor_connections(self, surface):
+        """"""
         for boid in self.boid_list:
             for neighbor in boid.neighbors:
                 diff = boid.pos - neighbor.pos
@@ -161,6 +181,7 @@ class BoidFrame:
                     )
 
     def debug_draw_obstacle_connections(self, surface):
+        """"""
         for boid in self.boid_list:
             for obstacle in boid.near_obstacles:
                 diff = boid.pos - obstacle.pos
@@ -174,6 +195,7 @@ class BoidFrame:
                     )
 
     def debug_print_collisions(self):
+        """"""
         # TODO: fix this, currently broken
         for obstacle in self.obstacle_list:
             collisions = 0

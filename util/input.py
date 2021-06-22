@@ -108,6 +108,7 @@ def process_key_event(event, boidFrame, message_display):
         )
     elif event.key in (pygame.K_q, pygame.K_ESCAPE):
         boidFrame.mode = FrameModes.MODE_DEFAULT
+        boidFrame.polygon_vertices = []
         message_display.show_message("Now in default mode.", 2)
     elif event.key == pygame.K_BACKSPACE:
         if not boidFrame.obstacle_list[-1].permanent:
@@ -122,6 +123,7 @@ def process_key_event(event, boidFrame, message_display):
 
 
 def process_resize_event(event, screen, boidFrame):
+    """Process the resize of the window by resizing the boid frame."""
     boidFrame.width = event.w
     boidFrame.height = event.h
     boidFrame.create_walls()

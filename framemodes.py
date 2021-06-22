@@ -1,8 +1,9 @@
 from enum import Enum
 
 
-# Define different (mutually exclusive) modes for the app:
 class FrameModes(Enum):
+    """Defines different (mutually exclusive) modes for the app."""
+
     MODE_DEFAULT = 0
     MODE_FOLLOW_MOUSE = 1
     MODE_DEBUG = 2
