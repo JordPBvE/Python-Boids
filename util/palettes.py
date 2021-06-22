@@ -239,6 +239,7 @@ all_palettes = [
     color_palette_Microsoft,
 ]
 
+
 # Get one of the above palettes randomly:
 def get_random_color_palette():
     return random.choice(all_palettes)

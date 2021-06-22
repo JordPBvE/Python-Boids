@@ -1,15 +1,13 @@
-import sys
-import math
 import random
 import pygame
-from pygame import Color
 from pygame.math import Vector2
 
 from boid import Boid
 from boidframe import BoidFrame
-from obstacle import Line
-from util.input import *
 from messagedisplay import MessageDisplay
+from util.input import (
+    process_mouse_event, process_key_event, process_resize_event
+)
 
 
 def main():
@@ -35,7 +33,9 @@ def main():
             random.randint(border_margin, width - border_margin),
             random.randint(border_margin, height - border_margin),
         )
-        random_velocity = Vector2(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5))
+        rand_vx = random.uniform(-0.5, 0.5)
+        rand_vy = random.uniform(-0.5, 0.5)
+        random_velocity = Vector2(rand_vx, rand_vy)
         frame.add_boid(
             Boid(
                 pos=random_pos,

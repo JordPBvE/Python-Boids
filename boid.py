@@ -1,6 +1,5 @@
 import math
 import copy
-from random import randint
 import pygame
 from pygame import Color
 from pygame.math import Vector2
@@ -15,10 +14,10 @@ class Boid:
     Class instance attributes:
     frame: BoidFrame -- the BoidFrame object within which the boid is contained
     pos: Vector2(int, int) -- the (2d) position vector of the boid
-    size: int -- the size (from the center to the "head", in pixels) of the boid
+    size: int -- the size of the boid (from center to "head", in pixels)
     velocity: Vector2(float, float) -- the (2d) velocity vector of the boid
-    max_speed: float -- maximum boid speed (i.e. maximum velocity vector length)
-    min_speed: float -- minimum boid speed (i.e. minimum velocity vector length)
+    max_speed: float -- maximum boid speed (maximum velocity vector length)
+    min_speed: float -- minimum boid speed (minimum velocity vector length)
     color: Color -- the RGB color of the boid
     """
 
@@ -120,16 +119,17 @@ class Boid:
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
             if isinstance(obstacle, Polygon):
-                for l in obstacle.lines:
-                    for o in l.circles:
-                        diff = self.pos - o.pos
-                        if diff.length() - o.radius < self.obstacle_radius:
-                            self.near_obstacles.append(o)
+                for line in obstacle.lines:
+                    for circle in line.circles:
+                        diff = self.pos - circle.pos
+                        diff_adjusted = diff.length() - circle.radius
+                        if diff_adjusted < self.obstacle_radius:
+                            self.near_obstacles.append(circle)
             elif isinstance(obstacle, Line):
-                for o in obstacle.circles:
-                    diff = self.pos - o.pos
-                    if diff.length() - o.radius < self.obstacle_radius:
-                        self.near_obstacles.append(o)
+                for circle in obstacle.circles:
+                    diff = self.pos - circle.pos
+                    if diff.length() - circle.radius < self.obstacle_radius:
+                        self.near_obstacles.append(circle)
             else:
                 diff = self.pos - obstacle.pos
 
@@ -180,6 +180,62 @@ class Boid:
 
         return velocity_correction
 
+    def obstacle_avoid_direct(self):
+        result = Vector2(0, 0)
+        for obstacle in self.near_obstacles:
+            diverging_vector = self.pos - obstacle.pos
+            diverging_vector -= diverging_vector * (
+                obstacle.radius / diverging_vector.length()
+            )
+            if diverging_vector.length() < (self.size * 20):
+                strength = 1 / (diverging_vector.length() ** 2)
+                diverging_vector *= strength
+                result += diverging_vector
+        result /= 2
+        return result
+
+    def obstacle_avoid_steering(self):
+        result = Vector2(0, 0)
+        for obstacle in self.near_obstacles:
+            # "rename" variables to shorten the equation for
+            # `dist_vector_line_to_obstacle` below
+            px = self.pos.x
+            py = self.pos.y
+            ox = obstacle.pos.x
+            oy = obstacle.pos.y
+            q = self.velocity.y/self.velocity.x
+            # d here is the distance from the midpoint of the obstacle to
+            # the line through the midpoint and head of the boid
+            dist_vector_line_to_obstacle = (
+                abs((q) * ox - oy + (py - (q) * px))
+                / (math.sqrt(1 + (q) ** 2))
+            )
+
+            to_obstacle = obstacle.pos - self.pos
+            angle_with_obstacle = self.velocity.angle_to(to_obstacle)
+            # the "+ 10" is there to make boids that would scratch the edge
+            # of the obstacle also steer away
+            is_obstacle_in_front = (
+                dist_vector_line_to_obstacle < obstacle.radius + 10
+                and abs(angle_with_obstacle) < 90
+            )
+
+            if is_obstacle_in_front:
+                dist_to_obstacle = to_obstacle.length() - obstacle.radius
+                # The below formula was the result of experimentation
+                strength = math.sqrt(obstacle.radius) / dist_to_obstacle
+                # If the angle to the obstacle is nonnegative, turn right,
+                # otherwise turn left
+                if angle_with_obstacle >= 0:
+                    result += (
+                        strength * self.velocity.rotate(-90)
+                    )
+                else:
+                    result += (
+                        strength * self.velocity.rotate(90)
+                    )
+        return result
+
     def get_obstacle_avoidance_component(self, factor_direct=0.6):
         """Get velocity component that steers the boid around obstacles.
 
@@ -192,57 +248,12 @@ class Boid:
         # calculate direct avoidance vector (directly away from obstacles)
         cumulative_diverging_direct = Vector2(0, 0)
         if factor_direct > 0:
-            for obstacle in self.near_obstacles:
-                diverging_vector = self.pos - obstacle.pos
-                diverging_vector -= diverging_vector * (
-                    obstacle.radius / diverging_vector.length()
-                )
-                if diverging_vector.length() < (self.size * 20):
-                    strength = 1 / (diverging_vector.length() ** 2)
-                    diverging_vector *= strength
-                    cumulative_diverging_direct += diverging_vector
-            cumulative_diverging_direct /= 2
+            cumulative_diverging_direct = self.obstacle_avoid_direct()
 
         # calculate steering avoidance vector (steering around obstacles)
         cumulative_diverging_steering = Vector2(0, 0)
         if factor_direct < 1:
-            for obstacle in self.near_obstacles:
-                # "rename" variables to shorten the equation for 
-                # `dist_vector_line_to_obstacle` below
-                px = self.pos.x
-                py = self.pos.y
-                ox = obstacle.pos.x
-                oy = obstacle.pos.y
-                q = self.velocity.y/self.velocity.x
-                # d here is the distance from the midpoint of the obstacle to
-                # the line through the midpoint and head of the boid
-                dist_vector_line_to_obstacle = (
-                    abs((q) * ox - oy + (py - (q) * px))
-                    / (math.sqrt(1 + (q) ** 2))
-                )
-
-                to_obstacle = obstacle.pos - self.pos
-                angle_with_obstacle = self.velocity.angle_to(to_obstacle)
-                # the "+ 10" is there to make boids that would scratch the edge
-                # of the obstacle also steer away
-                is_obstacle_in_front = (
-                    dist_vector_line_to_obstacle < obstacle.radius + 10
-                    and abs(angle_with_obstacle) < 90
-                )
-
-                if is_obstacle_in_front:
-                    dist_to_obstacle = to_obstacle.length() - obstacle.radius
-                    strength = math.sqrt(obstacle.radius) / dist_to_obstacle
-                    # If the angle to the obstacle is nonnegative, turn right,
-                    # otherwise turn left
-                    if angle_with_obstacle >= 0:
-                        cumulative_diverging_steering += (
-                            strength * self.velocity.rotate(-90)
-                        )
-                    else:
-                        cumulative_diverging_steering += (
-                            strength * self.velocity.rotate(90)
-                        )
+            cumulative_diverging_steering = self.obstacle_avoid_steering()
         return (
             factor_direct * cumulative_diverging_direct
             + (1 - factor_direct) * cumulative_diverging_steering

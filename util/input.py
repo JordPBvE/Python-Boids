@@ -2,8 +2,6 @@ import pygame
 from pygame.math import Vector2
 
 from obstacle import Circle
-import util.palettes
-from boidframe import BoidFrame
 from framemodes import FrameModes
 
 
@@ -19,7 +17,7 @@ def process_mouse_event(event, boidFrame, message_display):
 
 
 def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
-    # get the tuple of values for which mouse button (left, middle, right) was 
+    # get the tuple of values for which mouse button (left, middle, right) was
     # clicked, e.g. (False, False, True) when RMB was pressed
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]:  # LMB
@@ -31,7 +29,7 @@ def handle_mouse_input_mode_build_polygon(event, boidFrame, mouse_pos):
 
 
 def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
-    # get the tuple of values for which mouse button (left, middle, right) was 
+    # get the tuple of values for which mouse button (left, middle, right) was
     # clicked, e.g. (True, False, False) when LMB was pressed
     buttons_pressed = pygame.mouse.get_pressed()
     if buttons_pressed[0]:  # LMB
@@ -61,6 +59,7 @@ def handle_key_input_mode_build(event, boidFrame):
         if not boidFrame.obstacle_list[-1].permanent:
             boidFrame.obstacle_list.pop()
 
+
 def process_key_event(event, boidFrame, message_display):
     """Process a keypress."""
     if boidFrame.mode == FrameModes.MODE_BUILD:
@@ -76,12 +75,14 @@ def process_key_event(event, boidFrame, message_display):
     elif event.key == pygame.K_RIGHT:
         boidFrame.next_palette()
         message_display.show_message(
-            f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`"
+            f"Switched to palette"
+            f" `{boidFrame.palette_selector.current_palette.name}`"
         )
     elif event.key == pygame.K_LEFT:
         boidFrame.prev_palette()
         message_display.show_message(
-            f"Switched to palette `{boidFrame.palette_selector.current_palette.name}`"
+            f"Switched to palette"
+            f" `{boidFrame.palette_selector.current_palette.name}`"
         )
     elif event.key == pygame.K_d:
         boidFrame.mode = FrameModes.MODE_DEBUG
@@ -89,7 +90,8 @@ def process_key_event(event, boidFrame, message_display):
     elif event.key == pygame.K_b:
         boidFrame.mode = FrameModes.MODE_BUILD
         message_display.show_message(
-            "Build mode activated; left click to place an obstacle, use scrollwheel to adjust size.",
+            "Build mode activated; left click to place an obstacle, use"
+            " scrollwheel to adjust size.",
             4,
         )
     elif event.key == pygame.K_m:
@@ -105,13 +107,12 @@ def process_key_event(event, boidFrame, message_display):
         if boidFrame.mode == FrameModes.MODE_BUILD_POLYGON:
             boidFrame.polygon_vertices = []
             boidFrame.mode = FrameModes.MODE_BUILD
-            message_display.show_message("You can now place circular obstacles")
+            message_display.show_message("You can now place circle obstacles")
         elif boidFrame.mode == FrameModes.MODE_BUILD:
             boidFrame.mode = FrameModes.MODE_BUILD_POLYGON
             message_display.show_message("You can now place Polygons")
         else:
             message_display.show_message("[ b o i d s ]")
-
 
 
 def process_resize_event(event, screen, boidFrame):

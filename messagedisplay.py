@@ -9,7 +9,7 @@ class MessageDisplay:
     font: pygame.freetype.SysFont -- the font of the displayed messages
     font_size: int -- the font size (in pixels) of the displayed messages
     font_color: (int, int, int) -- the RGB color of the displayed messages
-    message_height: float -- factor between 0 and 1 that determines the height
+    msg_height: float -- factor between 0 and 1 that determines the height
     at which messages are displayed (where 0 is the top and 1 is the bottom)
     message
     message: str -- the message that should be displayed
@@ -23,14 +23,15 @@ class MessageDisplay:
         font=None,
         font_size=24,
         font_color=(255, 255, 255),
-        message_height=0.5,
+        msg_height=0.5,
     ):
         self.font_size = font_size
         self.font_color = font_color
-        self.font = (
-            font if font != None else pygame.freetype.SysFont("Arial", font_size)
-        )
-        self.message_height = message_height
+        if font is None:
+            self.font = pygame.freetype.SysFont("Arial", font_size)
+        else:
+            self.font = font
+        self.msg_height = msg_height
         self.message = ""
         self.dispatch_start = timer()
         self.show = True
@@ -42,11 +43,11 @@ class MessageDisplay:
         pygame.org/docs/ref/freetype.html#pygame.freetype.Font.render_to
         """
         font.origin = True
-        words = text.split(' ')
+        words = text.split(" ")
         width, height = screen.get_size()
         width *= 0.8
         line_spacing = font.get_sized_height() + 2
-        x, y = 0.2 * screen.get_width(), self.message_height * screen.get_height()
+        x, y = 0.2 * screen.get_width(), self.msg_height * screen.get_height()
         line_words = ""
         for word in words:
             line_words += word + " "
@@ -71,12 +72,14 @@ class MessageDisplay:
             # only wrap if text doesn't fit neatly on the screen
             full_rect = self.font.get_rect(self.message)
             if full_rect.width > 0.8 * screen.get_width():
-                self.word_wrap(screen, self.message, self.font, self.font_color)
+                self.word_wrap(screen, self.message,
+                               self.font, self.font_color)
             else:
                 x, y = (
                     0.5 * screen.get_width() - 0.5 * full_rect.width,
-                    self.message_height * screen.get_height(),
+                    self.msg_height * screen.get_height(),
                 )
-                self.font.render_to(screen, (x, y), self.message, self.font_color)
+                self.font.render_to(screen, (x, y),
+                                    self.message, self.font_color)
             if self.dispatch_start - timer() < 0:
                 self.show = False

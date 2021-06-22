@@ -1,11 +1,8 @@
-import random
-from datetime import datetime
+from random import choice
 
 import pygame
-from pygame import Color
 from pygame.math import Vector2
 
-from boid import Boid
 from framemodes import FrameModes
 from obstacle import Line, Polygon
 from util.palettes import PaletteSelector
@@ -13,7 +10,7 @@ from util.palettes import PaletteSelector
 
 class BoidFrame:
     """Class containing all information about the scene that is rendered.
-    
+
     Class attributes:
     width: int -- the width of the frame (matching window resolution)
     height: int -- the height of the frame (matching window resolution)
@@ -41,7 +38,7 @@ class BoidFrame:
 
     def add_boid(self, boid):
         """Add a boid to the frame."""
-        boid.color = random.choice(self.palette_selector.palette().boid_palette)
+        boid.color = choice(self.palette_selector.palette().boid_palette)
         self.boid_list.append(boid)
         boid.frame = self
 
@@ -102,7 +99,7 @@ class BoidFrame:
         for obstacle in self.obstacle_list:
             obstacle.color = self.palette_selector.palette().obstacle_color
         for boid in self.boid_list:
-            boid.color = random.choice(self.palette_selector.palette().boid_palette)
+            boid.color = choice(self.palette_selector.palette().boid_palette)
 
     def next_palette(self):
         """Change the palette to the next."""
