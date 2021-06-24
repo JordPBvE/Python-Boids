@@ -150,6 +150,8 @@ class BoidFrame:
                 permanent=True,
             )
         )
+        # Because the walls are integrated into the obstacle list we cannot simply append them,
+        # as when resizing, we need to know which lines to remove and which to keep as is.
         if self.obstacle_list == []:
             self.obstacle_list += new_walls
         else:

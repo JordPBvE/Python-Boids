@@ -76,12 +76,15 @@ class Line:
         self.populate()
 
     def populate(self):
-        """Create the circles that make up the line obstacle."""
-        circle_count = math.floor(self.length / (2 * self.circle_radius))
+        """Create the circles that make up the line obstacle (for avoidance)."""
+        circle_count = math.ceil(self.length / (2 * self.circle_radius))
         step = (self.end_pos - self.begin_pos) / circle_count
-        circle_pos = self.begin_pos
 
+        # Use start of line as fist position for the circle, then incrementally 
+        # add up part of the line 'vector'
+        circle_pos = self.begin_pos
         for i in range(circle_count + 1):
+            #initialising the circle and adding it to the line's list of circles
             circle = Circle(
                 pos=circle_pos,
                 radius=self.circle_radius,
@@ -102,6 +105,7 @@ class Line:
             self.end_pos,
             width=2,
         )
+        # In case the circles are set to visible for debugging purposes
         for circle in self.circles:
             circle.draw(surface)
 
@@ -128,7 +132,7 @@ class Polygon:
         self.create()
 
     def create(self):
-        """Create the lines that make up the polygon."""
+        """Create the lines (and with that cicle obstcles) that make up the polygon."""
         for i in range(len(self.vertices)):
             self.lines.append(
                 Line(
@@ -141,6 +145,8 @@ class Polygon:
 
     def draw(self, surface):
         """Draw the polygon."""
+        # We have separated these given cases to prevent issues with 
+        # pygame.draw.polygon (which requires > 2 points)
         if len(self.vertices) == 2:
             pygame.draw.line(
                 surface,

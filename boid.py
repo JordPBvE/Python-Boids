@@ -118,6 +118,9 @@ class Boid:
         """Find obstacles within the boid's obstacle radius."""
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
+            # Because frame.obstacles contains polygons, lines, and circles
+            # we havet to distinguish these objects and for the polygons and lines
+            # deduce the circles they 'contain'
             if isinstance(obstacle, Polygon):
                 for line in obstacle.lines:
                     for circle in line.circles:
@@ -158,11 +161,13 @@ class Boid:
 
             len = diverging_vector.length()
 
+            # only react to boids that are too close
             if 0 < len < (self.size * 8):
                 diverging_vector.x /= len
                 diverging_vector.y /= len
                 cumulative_diverging_vector += diverging_vector
 
+        # add own velocity to make the steering smoother
         cumulative_diverging_vector += self.velocity / 2
         cumulative_diverging_vector /= 80
 
@@ -188,6 +193,8 @@ class Boid:
                 obstacle.radius / diverging_vector.length()
             )
             if diverging_vector.length() < (self.size * 20):
+                # steer less fore obstacles that are further away, and more
+                # for obstacles that are closer
                 strength = 1 / (diverging_vector.length() ** 2)
                 diverging_vector *= strength
                 result += diverging_vector
