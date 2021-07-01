@@ -56,8 +56,8 @@ class BoidFrame:
         screen.fill(self.palette_selector.palette().background_color)
 
         if not self.paused:
-            for b in self.boid_list:
-                b.do_step(dt)
+            for boid in self.boid_list:
+                boid.do_step(dt)
 
         if self.mode == FrameModes.MODE_DEBUG:
             self.debug_draw_obstacle_connections(screen)
@@ -101,14 +101,14 @@ class BoidFrame:
         for boid in self.boid_list:
             boid.color = choice(self.palette_selector.palette().boid_palette)
 
-    def next_palette(self):
+    def select_next_palette(self):
         """Change the palette to the next."""
-        self.palette_selector.nxt()
+        self.palette_selector.next()
         self.update_colors()
 
-    def prev_palette(self):
+    def select_prev_palette(self):
         """Change the palette to the previous."""
-        self.palette_selector.prv()
+        self.palette_selector.prev()
         self.update_colors()
 
     def create_walls(self):

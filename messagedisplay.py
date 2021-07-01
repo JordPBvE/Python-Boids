@@ -69,17 +69,17 @@ class MessageDisplay:
     def render_message(self, screen):
         """Render a message to the screen (called every frame)"""
         if self.show:
+            if self.dispatch_start - timer() < 0:
+                self.show = False
             # only wrap if text doesn't fit neatly on the screen
-            full_rect = self.font.get_rect(self.message)
-            if full_rect.width > 0.8 * screen.get_width():
+            full_rectangle = self.font.get_rect(self.message)
+            if full_rectangle.width > 0.8 * screen.get_width():
                 self.word_wrap(screen, self.message,
                                self.font, self.font_color)
             else:
                 x, y = (
-                    0.5 * screen.get_width() - 0.5 * full_rect.width,
+                    0.5 * screen.get_width() - 0.5 * full_rectangle.width,
                     self.msg_height * screen.get_height(),
                 )
                 self.font.render_to(screen, (x, y),
                                     self.message, self.font_color)
-            if self.dispatch_start - timer() < 0:
-                self.show = False

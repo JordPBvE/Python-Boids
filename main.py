@@ -20,7 +20,7 @@ def main():
     pygame.display.set_caption("    [boids]")
     pygame.init()
 
-    frame = BoidFrame(width=width, height=height)
+    boid_frame = BoidFrame(width=width, height=height)
     message_display = MessageDisplay()
     message_display.show_message("[ b o i d s ]")
 
@@ -29,15 +29,15 @@ def main():
     # Leave a margin for the boids positions, so that they
     # don't spawn on the edge of the screen
     border_margin = 20
-    for i in range(boid_count):
+    for _ in range(boid_count):
         random_pos = Vector2(
             random.randint(border_margin, width - border_margin),
             random.randint(border_margin, height - border_margin),
         )
-        rand_vx = random.uniform(-0.5, 0.5)
-        rand_vy = random.uniform(-0.5, 0.5)
-        random_velocity = Vector2(rand_vx, rand_vy)
-        frame.add_boid(
+        random_velocity_x = random.uniform(-0.5, 0.5)
+        random_velocity_y = random.uniform(-0.5, 0.5)
+        random_velocity = Vector2(random_velocity_x, random_velocity_y)
+        boid_frame.add_boid(
             Boid(
                 pos=random_pos,
                 velocity=random_velocity,
@@ -49,18 +49,18 @@ def main():
     while should_run:
         # The clock is used to keep track of the time between each frame
         dt = clock.tick(60)
-        frame.do_step(dt, screen)
+        boid_frame.do_step(dt, screen)
         message_display.render_message(screen)
         # Handle events (such as input)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 should_run = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                process_mouse_event(event, frame, message_display)
+                process_mouse_event(event, boid_frame, message_display)
             elif event.type == pygame.KEYDOWN:
-                process_key_event(event, frame, message_display)
+                process_key_event(event, boid_frame, message_display)
             elif event.type == pygame.VIDEORESIZE:
-                process_resize_event(event, screen, frame)
+                process_resize_event(event, screen, boid_frame)
         pygame.display.update()
 
 

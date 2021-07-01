@@ -49,23 +49,24 @@ class Boid:
         Arguments:
         surface -- the surface that the boid should be rendered to
         """
-        s = (
+        direction_vector = (
             self.size * self.velocity.normalize()
-        )  # use the normalized velocity vector to draw the head
-        head = self.pos + s
+        )
+        # calculate where the head should be
+        head_pos = self.pos + direction_vector
 
-        # makes a copy of s rotated 90 degrees to the right
+        # makes a copy of `direction_vector` rotated 90 degrees to the right
         # deepcopy is used to prevent unintended changes to s
-        s_right = copy.deepcopy(s)
-        s_right.x, s_right.y = s_right.y, -s_right.x
-        foot_1 = self.pos - s + 0.5 * s_right
+        right_vector = copy.deepcopy(direction_vector)
+        right_vector.x, right_vector.y = right_vector.y, -right_vector.x
+        foot_1 = self.pos - direction_vector + 0.5 * right_vector
 
         # same thing, but rotated 90 degrees to the left
-        s_left = copy.deepcopy(s)
-        s_left.x, s_left.y = -s_left.y, s_left.x
-        foot_2 = self.pos - s + 0.5 * s_left
+        left_vector = copy.deepcopy(direction_vector)
+        left_vector.x, left_vector.y = -left_vector.y, left_vector.x
+        foot_2 = self.pos - direction_vector + 0.5 * left_vector
 
-        pygame.draw.polygon(surface, self.color, (head, foot_1, foot_2))
+        pygame.draw.polygon(surface, self.color, (head_pos, foot_1, foot_2))
 
     def do_step(self, dt):
         """Do a step for the next frame, calculating velocity and moving.
@@ -98,11 +99,11 @@ class Boid:
         else:
             self.velocity = self.velocity + v_res
 
-        # Cap speed:
-        speed = self.velocity.length()
-        if speed > self.max_speed:
+        # Cap speed (to prevent boids flying through obstacles):
+        boid_speed = self.velocity.length()
+        if boid_speed > self.max_speed:
             self.velocity = self.velocity.normalize() * self.max_speed
-        if speed < self.min_speed:
+        if boid_speed < self.min_speed:
             self.velocity = self.velocity.normalize() * self.min_speed
 
     def identify_neighbors(self):
@@ -119,7 +120,7 @@ class Boid:
         self.near_obstacles = []
         for obstacle in self.frame.obstacle_list:
             # Because frame.obstacles contains polygons, lines, and circles
-            # we havet to distinguish these objects and for the polygons and lines
+            # we have to distinguish these objects and for the polygons and lines
             # deduce the circles they 'contain'
             if isinstance(obstacle, Polygon):
                 for line in obstacle.lines:
@@ -141,14 +142,14 @@ class Boid:
 
     def get_cohesion_component(self):
         """Get velocity component that points to the center of all boids."""
-        com = Vector2(0, 0)
+        center_of_mass = Vector2(0, 0)
         neigbor_count = len(self.neighbors)
 
         for boid in self.neighbors:
-            com += boid.pos / neigbor_count
+            center_of_mass += boid.pos / neigbor_count
 
         # difference vector between boid position and center of mass
-        diff = (com - self.pos) / 6000
+        diff = (center_of_mass - self.pos) / 6000
 
         return diff
 
@@ -158,13 +159,11 @@ class Boid:
 
         for boid in self.neighbors:
             diverging_vector = self.pos - boid.pos
-
-            len = diverging_vector.length()
-
+            length = diverging_vector.length()
             # only react to boids that are too close
-            if 0 < len < (self.size * 8):
-                diverging_vector.x /= len
-                diverging_vector.y /= len
+            if 0 < length < (self.size * 8):
+                diverging_vector.x /= length
+                diverging_vector.y /= length
                 cumulative_diverging_vector += diverging_vector
 
         # add own velocity to make the steering smoother
@@ -175,18 +174,18 @@ class Boid:
 
     def get_alignment_component(self):
         """Get velocity component that aligns boid velocity with neighbors."""
-        total_vector = Vector2(0, 0)
+        alignment_vector = Vector2(0, 0)
 
         for boid in self.neighbors:
-            total_vector += boid.velocity
+            alignment_vector += boid.velocity
 
-        average_neighbor_velocity = total_vector / len(self.neighbors)
+        average_neighbor_velocity = alignment_vector / len(self.neighbors)
         velocity_correction = (average_neighbor_velocity - self.velocity) / 60
 
         return velocity_correction
 
     def obstacle_avoid_direct(self):
-        result = Vector2(0, 0)
+        obstacle_avoid_direct_vector = Vector2(0, 0)
         for obstacle in self.near_obstacles:
             diverging_vector = self.pos - obstacle.pos
             diverging_vector -= diverging_vector * (
@@ -197,12 +196,12 @@ class Boid:
                 # for obstacles that are closer
                 strength = 1 / (diverging_vector.length() ** 2)
                 diverging_vector *= strength
-                result += diverging_vector
-        result /= 2
-        return result
+                obstacle_avoid_direct_vector += diverging_vector
+        obstacle_avoid_direct_vector /= 2
+        return obstacle_avoid_direct_vector
 
     def obstacle_avoid_steering(self):
-        result = Vector2(0, 0)
+        obstacle_avoid_steering_vector = Vector2(0, 0)
         for obstacle in self.near_obstacles:
             # "rename" variables to shorten the equation for
             # `dist_vector_line_to_obstacle` below
@@ -234,14 +233,14 @@ class Boid:
                 # If the angle to the obstacle is nonnegative, turn right,
                 # otherwise turn left
                 if angle_with_obstacle >= 0:
-                    result += (
+                    obstacle_avoid_steering_vector += (
                         strength * self.velocity.rotate(-90)
                     )
                 else:
-                    result += (
+                    obstacle_avoid_steering_vector += (
                         strength * self.velocity.rotate(90)
                     )
-        return result
+        return obstacle_avoid_steering_vector
 
     def get_obstacle_avoidance_component(self, factor_direct=0.6):
         """Get velocity component that steers the boid around obstacles.
@@ -266,24 +265,24 @@ class Boid:
             + (1 - factor_direct) * cumulative_diverging_steering
         )
 
-    def get_mouse_component(self, margin=0.15):
+    def get_mouse_component(self, screen_margin=0.15):
         """Calculate the velocity component that moves toward mouse cursor.
 
         Keyword arguments:
-        margin: float -- the factor of screen space that should be considered
-        margin, that is: space that the mouse cannot enter
+        screen_margin: float -- the factor of screen space that should be
+        considered margin, that is: space that the mouse cannot enter
         """
         mouse_pos = Vector2()
         mouse_pos.x, mouse_pos.y = pygame.mouse.get_pos()
         # Cap the mouse position to prevent boids from
         # flying off screen when following the mouse
         mouse_pos.x = max(
-            margin * self.frame.width,
-            min(mouse_pos.x, self.frame.width * (1 - margin)),
+            screen_margin * self.frame.width,
+            min(mouse_pos.x, self.frame.width * (1 - screen_margin)),
         )
         mouse_pos.y = max(
-            margin * self.frame.height,
-            min(mouse_pos.y, self.frame.height * (1 - margin)),
+            screen_margin * self.frame.height,
+            min(mouse_pos.y, self.frame.height * (1 - screen_margin)),
         )
         # Calculate difference and normalize (so that the)
         # distance to the mouse doesn't affect the strength

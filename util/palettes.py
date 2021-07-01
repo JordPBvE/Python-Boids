@@ -10,12 +10,12 @@ class PaletteSelector:
         self.current_palette_index = 0
         self.current_palette = all_palettes[0]
 
-    def nxt(self):
+    def next(self):
         self.current_palette_index += 1
         self.current_palette_index %= len(all_palettes)
         self.current_palette = all_palettes[self.current_palette_index]
 
-    def prv(self):
+    def prev(self):
         self.current_palette_index -= 1
         self.current_palette_index %= len(all_palettes)
         self.current_palette = all_palettes[self.current_palette_index]
