@@ -5,7 +5,7 @@ from pygame import Color
 from pygame.math import Vector2
 
 from obstacle import Polygon, Line
-from framemodes import FrameModes
+from util.framemodes import FrameModes
 
 
 class Boid:

@@ -3,7 +3,7 @@ from random import choice
 import pygame
 from pygame.math import Vector2
 
-from framemodes import FrameModes
+from util.framemodes import FrameModes
 from obstacle import Line, Polygon
 from util.palettes import PaletteSelector
 

@@ -2,7 +2,7 @@ import pygame
 from pygame.math import Vector2
 
 from obstacle import Circle
-from framemodes import FrameModes
+from util.framemodes import FrameModes
 
 
 def process_mouse_event(event, boidFrame, message_display):

@@ -1,11 +1,10 @@
-
 import random
 import pygame
 from pygame.math import Vector2
 
 from boid import Boid
 from boidframe import BoidFrame
-from messagedisplay import MessageDisplay
+from util.messagedisplay import MessageDisplay
 from util.input import (
     process_mouse_event, process_key_event, process_resize_event
 )
@@ -25,7 +24,11 @@ def main():
     message_display.show_message("[ b o i d s ]")
 
     # Create boids:
+
+    # ================= CHANGE BOID COUNT ================
     boid_count = 40
+    # ====================================================
+
     # Leave a margin for the boids positions, so that they
     # don't spawn on the edge of the screen
     border_margin = 20
@@ -40,6 +43,11 @@ def main():
         boid_frame.add_boid(
             Boid(
                 pos=random_pos,
+
+                # ================= CHANGE BOID SIZE =================
+                size = 6,
+                # ====================================================
+
                 velocity=random_velocity,
                 max_speed=random.uniform(0.2, 0.3),
             )
