@@ -41,8 +41,7 @@ def handle_mouse_input_mode_build(event, boidFrame, mouse_pos):
             boidFrame.palette_selector.palette().obstacle_color,
             True,
         )
-        new_circle.frame = boidFrame
-        boidFrame.obstacle_list.append(new_circle)
+        boidFrame.add_obstacle(new_circle)
     # Handle scroling:
     if event.button == 4:
         if boidFrame.obstacle_size < 300:
